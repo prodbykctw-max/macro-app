@@ -1,1 +1,1 @@
-v2.6.2 — Fix scroll-rob bug: tab hub button no longer hijacks vertical scroll. Added 10px movement threshold to cancel pending long-press, touchcancel handler, passive listeners where safe, button uses touch-action:manipulation — 2026-05-24
+v2.6.3 — Remove duplicate global KCTW signature outside panels (was rendering on EVERY panel + nested invalid <a> tag breaking scroll for panels 7-9). Connect panel signature retained — 2026-05-24
