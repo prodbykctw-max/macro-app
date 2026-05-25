@@ -752,7 +752,10 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
 
   <!-- HEADER -->
   <div class="app-header">
-    <div class="logo">MACRO<span>.</span></div>
+    <div style="display:flex;flex-direction:column;align-items:flex-start;line-height:1">
+      <div class="logo">MACRO<span>.</span></div>
+      <div style="font-family:'Oswald',sans-serif;font-size:7px;font-weight:500;letter-spacing:.24em;color:var(--muted2);margin-top:1px;text-transform:uppercase">A KCTW APP</div>
+    </div>
     <div class="xp-bar-wrap">
       <div class="xp-level-row">
         <span class="level-pill" id="levelPill">Lv.1 Rookie</span>
@@ -1647,12 +1650,21 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
         </div>
       </div>
 
+      <!-- KCTW SIGNATURE — same DNA as LUber, calibrated to MACRO's clinical palette -->
+      <div style="margin:18px 0 14px;padding:18px 16px;background:linear-gradient(135deg,rgba(200,255,0,.04),rgba(255,255,255,.02));border:1px solid var(--border);border-radius:var(--r2);text-align:center">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.16em;color:var(--accent);line-height:1;margin-bottom:6px">KCTW</div>
+        <div style="font-family:'Oswald',sans-serif;font-size:9px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">KNOWLEDGE CHANGE THE WORLD</div>
+        <div style="font-family:'Inter',sans-serif;font-size:10px;color:var(--muted2);line-height:1.6;margin-bottom:10px">A KCTW Application · v2.4 · Built single-file by hand</div>
+        <a href="https://instagram.com/prodbykctw" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;font-family:'Oswald',sans-serif;font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);text-decoration:none;border:1px solid var(--border2);border-radius:14px;padding:5px 12px;-webkit-tap-highlight-color:transparent">
+          BUILT BY <span style="color:var(--text)">@PRODBYKCTW</span> ↗
+        </a>
+      </div>
+
       <div class="nav-buttons">
         <button class="btn btn-ghost" onclick="goToPanel(7)">← Back</button>
         <button class="btn btn-success" onclick="downloadHTML()">⬇ Download</button><button class="btn btn-primary" onclick="logTodayFull()" style="margin-left:6px">📋 Log Day</button>
       </div>
     </div>
-    <div class="panel" id="panel9">
       <div class="screen-eyebrow">Browse</div>
       <h1 class="screen-title">Recipe<br>Browser</h1>
       <p class="screen-sub">82 high-protein recipes. Filter by diet, goal, and time.</p>
@@ -1669,6 +1681,20 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
         oninput="searchRecipes(this.value)">
       <div id="recipeGrid"></div>
       <div class="nav-buttons"><button class="btn btn-ghost" onclick="goToPanel(3)">&larr; Plan</button></div>
+    </div>
+
+    <!-- ══ KCTW SIGNATURE — Global footer on every panel ══ -->
+    <div class="kctw-signature" style="margin-top:32px;padding:20px 0 12px;border-top:1px solid var(--border);display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center">
+      <div style="display:flex;align-items:center;gap:8px;justify-content:center">
+        <div style="width:3px;height:3px;border-radius:50%;background:var(--accent);opacity:.6"></div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:.36em;color:var(--accent);line-height:1">KCTW</div>
+        <div style="width:3px;height:3px;border-radius:50%;background:var(--accent);opacity:.6"></div>
+      </div>
+      <div style="font-family:'Oswald',sans-serif;font-size:8px;font-weight:500;letter-spacing:.32em;text-transform:uppercase;color:var(--muted2)">Knowledge Change The World</div>
+      <a href="https://instagram.com/prodbykctw" target="_blank" rel="noopener"
+        style="font-family:'Inter',sans-serif;font-size:9px;color:var(--muted);text-decoration:none;margin-top:2px;letter-spacing:.04em">
+        Built by <a href="https://instagram.com/prodbykctw" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none;font-weight:600">@prodbykctw</a> · v2.4
+      </a>
     </div>
 
   </div><!-- end app-content -->
@@ -2070,7 +2096,7 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
     </div>
 
     <div style="font-family:'Inter',sans-serif;font-size:10px;color:#333;text-align:center;margin-top:16px;padding:12px;border-top:1px solid #111;line-height:1.6">
-      Every stream counts 🙏 · Follow @prodbykctw on IG for updates
+      Every stream counts 🙏 · Follow <a href="https://instagram.com/prodbykctw" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none;font-weight:600">@prodbykctw</a> on IG for updates
     </div>
   </div>
 </div>
@@ -6325,7 +6351,7 @@ const PAGE_CONTENT = {
         {icon:'🤖', title:'AI Chat', body:'The AI chat feature sends your messages to Anthropic\'s Claude API via a proxy. Messages include your protein target, store, and diet type for context. Anthropic\'s privacy policy governs that data. No personally identifiable information is included unless you type it yourself.'},
         {icon:'🍪', title:'No Cookies', body:'MACRO uses no cookies, no session tokens, no fingerprinting, and no cross-site tracking of any kind. It is a self-contained HTML file.'},
         {icon:'👶', title:'Children\'s Privacy', body:'MACRO is designed for adults 18 and over. We do not knowingly collect information from anyone under 18.'},
-        {icon:'📬', title:'Contact', body:'Questions about privacy? Reach out on Instagram: @prodbykctw'},
+        {icon:'📬', title:'Contact', body:'Questions about privacy? Reach out on Instagram: <a href="https://instagram.com/prodbykctw" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none;font-weight:600">@prodbykctw</a>'},
       ].map(s => `
         <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:14px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start">
           <span style="font-size:20px;flex-shrink:0;margin-top:1px">${s.icon}</span>
