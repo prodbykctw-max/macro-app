@@ -1,1 +1,1 @@
-v2.6.3 — Remove duplicate global KCTW signature outside panels (was rendering on EVERY panel + nested invalid <a> tag breaking scroll for panels 7-9). Connect panel signature retained — 2026-05-24
+v2.6.3 — CRITICAL: Removed orphan </div> on Panel 7 that closed wrapper prematurely. Nav-buttons "← Back / Connect →" was rendering OUTSIDE all panels (visible on every screen). Confirmed all 9 panels structurally clean via div-balance audit — 2026-05-24
