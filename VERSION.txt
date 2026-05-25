@@ -1,1 +1,1 @@
-v2.6.1 — Remove content-visibility:auto + contain-intrinsic-size from .panel (caused phantom 6400px layout space + nav-button bleed-through) — 2026-05-24
+v2.6.2 — Fix scroll-rob bug: tab hub button no longer hijacks vertical scroll. Added 10px movement threshold to cancel pending long-press, touchcancel handler, passive listeners where safe, button uses touch-action:manipulation — 2026-05-24
