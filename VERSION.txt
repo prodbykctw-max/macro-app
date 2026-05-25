@@ -1,1 +1,1 @@
-v2.5.1 — KCTW signature, semver, all @prodbykctw mentions hyperlinked to IG — 2026-05-24
+v2.6 — Senior dev audit: SEO meta, Open Graph, Twitter Card, favicon, PWA manifest, reduced-motion a11y, content-visibility perf, aria-labels, font preconnect — 2026-05-24
