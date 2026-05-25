@@ -2,7 +2,7 @@
 
 > A single-file, offline-first protein optimization and biohacking platform for men 18–50.
 
-🔗 **Live App:** [macroappbykctw.netlify.app](https://macroappbykctw.netlify.app)
+🔗 **Live App:** [macroappbykctw.netlify.app](https://macroappbykctw.netlify.app) · [prodbykctw-max.github.io/macro-app](https://prodbykctw-max.github.io/macro-app/)
 👤 **Creator:** KCTW · [@prodbykctw](https://instagram.com/prodbykctw)
 🎵 **Music:** [Spotify](https://open.spotify.com/artist/1tVXH4rasJKQEZFAEodmGe) · [Apple Music](https://music.apple.com/us/album/tres-single/1696935461) · [SoundCloud](https://soundcloud.com/prodbykctw)
 
