@@ -550,6 +550,16 @@ body.modal-open .music-fab{
   pointer-events:none !important;
   transform:scale(.7) !important;
 }
+
+/* During onboarding — hide ALL app chrome behind the overlay */
+body:has(#onboardOverlay[style*="display:flex"]) .app-header,
+body:has(#onboardOverlay[style*="display:flex"]) .app-content,
+body:has(#onboardOverlay[style*="display:flex"]) .app-nav,
+body:has(#onboardOverlay[style*="display: flex"]) .app-header,
+body:has(#onboardOverlay[style*="display: flex"]) .app-content,
+body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
+  visibility:hidden !important;
+}
 .search-drawer{position:absolute;bottom:var(--nav-h);right:0;left:0;z-index:200;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2) var(--r2) 0 0;box-shadow:0 8px 40px rgba(0,0,0,.6);display:none;flex-direction:column;overflow:hidden;animation:slideIn .2s ease;max-height:70vh}
 .search-drawer.open{display:flex}
 .search-drawer-hdr{padding:12px 14px 10px;border-bottom:1px solid var(--border)}
@@ -648,7 +658,7 @@ body.modal-open .music-fab{
   </div>
 
   <!-- FIRST-USE ONBOARDING OVERLAY (foot-in-the-door) -->
-  <div id="onboardOverlay" style="display:none;position:absolute;inset:0;background:rgba(9,9,9,.99);z-index:1000;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center;">
+  <div id="onboardOverlay" style="display:none;position:absolute;inset:0;background:#000;z-index:1000;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center;overflow-y:auto">
 
     <!-- STEP 1 — Name -->
     <div id="onboardStep1">
@@ -6672,7 +6682,7 @@ initTour();
 initTabWheel();
 // Always start on Target panel regardless of browser session state
 goToPanel(1);
-setTimeout(checkFirstUse, 500);
+checkFirstUse(); // Fire onboarding immediately if no name — no flash of panel content
 </script>
 </body>
 </html>
