@@ -4247,6 +4247,12 @@ function setAiMode(mode){
   document.getElementById('ai-tab-eat').style.border     = mode==='eat' ? 'none' : '1px solid var(--border)';
 }
 
+// Model and user text is shown as plain text, never parsed as HTML.
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+}
+const AI_TYPING = '<em style="color:var(--muted)">Thinking...</em>';
+
 function renderAiMessages(){
   const el = document.getElementById('aiMessages'); if(!el) return;
   if(aiMessages.length === 0){
@@ -4262,7 +4268,7 @@ function renderAiMessages(){
   }
   el.innerHTML = aiMessages.map(m=>`
     <div style="display:flex;flex-direction:column;gap:2px;align-items:${m.role==='user'?'flex-end':'flex-start'}">
-      <div style="max-width:88%;background:${m.role==='user'?'var(--accent)':'var(--bg3)'};color:${m.role==='user'?'#000':'var(--text)'};border:1px solid ${m.role==='user'?'var(--accent)':'var(--border)'};border-radius:${m.role==='user'?'12px 12px 2px 12px':'12px 12px 12px 2px'};padding:9px 12px;font-size:12px;line-height:1.55">${m.content}</div>
+      <div style="max-width:88%;background:${m.role==='user'?'var(--accent)':'var(--bg3)'};color:${m.role==='user'?'#000':'var(--text)'};border:1px solid ${m.role==='user'?'var(--accent)':'var(--border)'};border-radius:${m.role==='user'?'12px 12px 2px 12px':'12px 12px 12px 2px'};padding:9px 12px;font-size:12px;line-height:1.55">${m.role==='assistant'&&m.content===AI_TYPING?AI_TYPING:escapeHtml(m.content)}</div>
     </div>`).join('');
   el.scrollTop = el.scrollHeight;
 }
@@ -4281,7 +4287,7 @@ async function sendAiMessage(){
   renderAiMessages();
 
   // Show typing indicator
-  aiMessages.push({role:'assistant', content:'<em style="color:var(--muted)">Thinking...</em>'});
+  aiMessages.push({role:'assistant', content:AI_TYPING});
   renderAiMessages();
 
   const systemPrompt = `You are MACRO AI, a nutrition and health assistant built into the MACRO protein meal planner app. The user's current context:
@@ -4356,7 +4362,7 @@ Create a practical full-day meal plan based on their request. Format your respon
     resultEl.innerHTML = `
       <div style="background:var(--bg3);border:1px solid rgba(200,255,0,.2);border-radius:var(--r2);padding:14px;margin-bottom:10px">
         <div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:8px">✦ Your Custom Plan</div>
-        <div style="font-size:12px;color:var(--text);line-height:1.7;white-space:pre-line">${plan}</div>
+        <div style="font-size:12px;color:var(--text);line-height:1.7;white-space:pre-line">${escapeHtml(plan)}</div>
       </div>
       <button onclick="document.getElementById('eatResult').style.display='none';document.getElementById('eatInput').value=''" style="width:100%;background:transparent;border:1px solid var(--border);border-radius:var(--r);color:var(--muted);font-size:12px;padding:8px;cursor:pointer;font-family:'Inter',sans-serif">Start Over</button>`;
   } catch(e){
