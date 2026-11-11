@@ -5971,7 +5971,7 @@ function runCarbCalc() {
   const trainHigh = Math.round(weightKg * g.trainMax);
   const trainMid  = Math.round((trainLow + trainHigh) / 2);
   const restLow   = Math.max(130, Math.round(weightKg * g.restMin)); // AND floor
-  const restHigh  = Math.round(weightKg * g.restMax);
+  const restHigh  = Math.max(restLow, Math.round(weightKg * g.restMax)); // never below the low end
   const restMid   = Math.round((restLow + restHigh) / 2);
 
   // Display results
@@ -6712,6 +6712,7 @@ function setPrefWeightUnit(u) {
   userPrefs.weightUnit = u;
   saveUserPrefs();
   updatePrefsUI();
+  if (typeof setWeightUnit === 'function') setWeightUnit(u); // keep the calculator's unit in step
   if (typeof showToast === 'function') showToast('📏','Saved',`Weight in ${u.toUpperCase()}`);
 }
 function setVolumeUnit(u) {
