@@ -2737,7 +2737,7 @@ function algo_density(pool,target){
 function algo_budgetCapped(pool,target,budget,mode){
   const byPPD=[...pool].sort((a,b)=>b.ppd-a.ppd);
   const plan=[];let protein=0;let cost=0;let slot=0;let iter=0;
-  const daily=state.budgetPeriod==='daily'?budget:state.budgetPeriod==='weekly'?budget/7:state.budgetPeriod==='monthly'?budget/30:budget/365;
+  const daily=budget; // state.budget is already a per-day figure (see onBudgetInput)
   if(mode==='exact'){
     while(protein<target&&iter<80){
       const rem=daily-cost;const aff=byPPD.filter(f=>f.adjCost<=rem+0.01);
