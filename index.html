@@ -834,7 +834,7 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
             <div class="weight-wrap">
               <input type="number" class="calc-input" id="calcWeight" placeholder="185" min="50" max="700" style="padding-right:38px" oninput="runCalc()" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border2)'">
               <div class="unit-toggle">
-                <button class="unit-btn active" id="unit-lbs" onclick="setWeightUnit('lbs')">lbs</button>
+                <button class="unit-btn active" id="unit-lbs" onclick="setPrefWeightUnit('lbs')">lbs</button>
                 <button class="unit-btn" id="prefUnit-kg" onclick="setPrefWeightUnit('kg')">kg</button>
               </div>
             </div>
@@ -1892,7 +1892,7 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
               style="flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:9px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:12px;font-weight:600;letter-spacing:.1em;color:var(--text);-webkit-tap-highlight-color:rgba(0,0,0,0)">
               LBS
             </button>
-            <button id="unit-kg" onclick="setWeightUnit('kg')"
+            <button id="unit-kg" onclick="setPrefWeightUnit('kg')"
               style="flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:9px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:12px;font-weight:600;letter-spacing:.1em;color:var(--text);-webkit-tap-highlight-color:rgba(0,0,0,0)">
               KG
             </button>
