@@ -834,7 +834,7 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
             <div class="weight-wrap">
               <input type="number" class="calc-input" id="calcWeight" placeholder="185" min="50" max="700" style="padding-right:38px" oninput="runCalc()" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border2)'">
               <div class="unit-toggle">
-                <button class="unit-btn active" id="unit-lbs" onclick="setWeightUnit('lbs')">lbs</button>
+                <button class="unit-btn active" id="unit-lbs" onclick="setPrefWeightUnit('lbs')">lbs</button>
                 <button class="unit-btn" id="prefUnit-kg" onclick="setPrefWeightUnit('kg')">kg</button>
               </div>
             </div>
@@ -1892,7 +1892,7 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
               style="flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:9px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:12px;font-weight:600;letter-spacing:.1em;color:var(--text);-webkit-tap-highlight-color:rgba(0,0,0,0)">
               LBS
             </button>
-            <button id="unit-kg" onclick="setWeightUnit('kg')"
+            <button id="unit-kg" onclick="setPrefWeightUnit('kg')"
               style="flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:9px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:12px;font-weight:600;letter-spacing:.1em;color:var(--text);-webkit-tap-highlight-color:rgba(0,0,0,0)">
               KG
             </button>
@@ -2737,7 +2737,7 @@ function algo_density(pool,target){
 function algo_budgetCapped(pool,target,budget,mode){
   const byPPD=[...pool].sort((a,b)=>b.ppd-a.ppd);
   const plan=[];let protein=0;let cost=0;let slot=0;let iter=0;
-  const daily=state.budgetPeriod==='daily'?budget:state.budgetPeriod==='weekly'?budget/7:state.budgetPeriod==='monthly'?budget/30:budget/365;
+  const daily=budget; // state.budget is already a per-day figure (see onBudgetInput)
   if(mode==='exact'){
     while(protein<target&&iter<80){
       const rem=daily-cost;const aff=byPPD.filter(f=>f.adjCost<=rem+0.01);
@@ -5971,7 +5971,7 @@ function runCarbCalc() {
   const trainHigh = Math.round(weightKg * g.trainMax);
   const trainMid  = Math.round((trainLow + trainHigh) / 2);
   const restLow   = Math.max(130, Math.round(weightKg * g.restMin)); // AND floor
-  const restHigh  = Math.round(weightKg * g.restMax);
+  const restHigh  = Math.max(restLow, Math.round(weightKg * g.restMax)); // never below the low end
   const restMid   = Math.round((restLow + restHigh) / 2);
 
   // Display results
@@ -6712,6 +6712,7 @@ function setPrefWeightUnit(u) {
   userPrefs.weightUnit = u;
   saveUserPrefs();
   updatePrefsUI();
+  if (typeof setWeightUnit === 'function') setWeightUnit(u); // keep the calculator's unit in step
   if (typeof showToast === 'function') showToast('📏','Saved',`Weight in ${u.toUpperCase()}`);
 }
 function setVolumeUnit(u) {
