@@ -1,0 +1,12 @@
+name = "macro-signups"
+main = "src/index.js"
+compatibility_date = "2024-11-01"
+
+[vars]
+ALLOWED_ORIGINS = "https://prodbykctw-max.github.io,https://macroappbykctw.netlify.app"
+
+[[kv_namespaces]]
+binding = "SIGNUPS"
+id = "eeddb4ecfb4d46f28aa20186679063eb"
+
+# EXPORT_KEY is a secret, not a var. Set it with: npx wrangler secret put EXPORT_KEY

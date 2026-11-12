@@ -133,8 +133,9 @@ What can leave your device:
 - Fonts, which load from Google Fonts.
 - Links you click: supplement "Buy" links are Amazon affiliate links.
 
-The email capture form stores the address locally only. Its submit request is commented out in
-the code.
+The email capture form sends the address (with a timestamp and the page origin, no IP or
+location) to the `macro-signups` Cloudflare Worker in `worker/`, which stores it in KV. A copy
+is also kept in `localStorage`. Nothing is emailed automatically; the list is only stored.
 
 ---
 
