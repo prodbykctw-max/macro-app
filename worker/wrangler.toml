@@ -7,7 +7,6 @@ ALLOWED_ORIGINS = "https://prodbykctw-max.github.io,https://macroappbykctw.netli
 
 [[kv_namespaces]]
 binding = "SIGNUPS"
-# TODO: replace the placeholder below with the real KV namespace id before deploying.
 id = "eeddb4ecfb4d46f28aa20186679063eb"
 
 # EXPORT_KEY is a secret, not a var. Set it with: npx wrangler secret put EXPORT_KEY
