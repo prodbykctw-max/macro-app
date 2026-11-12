@@ -2287,6 +2287,9 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
 </div>
 
 <script>
+// Email sign-up list (Cloudflare Worker "macro-signups", see worker/)
+const SIGNUP_URL = 'https://macro-signups.prodbykctw.workers.dev';
+
 // ═══════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════
@@ -4996,7 +4999,7 @@ function initConnectPanel(){
   // Update email button if already captured
   try{
     const saved=localStorage.getItem('macroEmail');
-    if(saved){
+    if(saved&&localStorage.getItem('macroEmailSynced')==='1'){
       const btn=document.getElementById('emailCaptureBtn');
       if(btn){btn.textContent='✓ Subscribed — '+saved;btn.style.opacity='.6';btn.disabled=true;}
     }
@@ -5008,7 +5011,7 @@ function initConnectPanel(){
 // ═══════════════════════════════════
 function openEmailModal(){
   registerModalOpen('emailModal');
-  try{if(localStorage.getItem('macroEmail')){showToast&&showToast('✓','Already subscribed!','Check your inbox for the free PDF');return;}}catch(e){}
+  try{if(localStorage.getItem('macroEmail')&&localStorage.getItem('macroEmailSynced')==='1'){showToast&&showToast('✓','Already subscribed!','You\'re already on the list');return;}}catch(e){}
   document.getElementById('emailModal').style.display='flex';
   setTimeout(()=>document.getElementById('emailInput')?.focus(),200);
 }
@@ -5018,28 +5021,65 @@ function closeEmailModal(){
   try{localStorage.setItem('macroEmailDismissed','1');}catch(e){}
 }
 function closeEmailIfBg(e){if(e.target===document.getElementById('emailModal'))closeEmailModal();}
-function submitEmail(){
+// POST the address to the sign-up Worker. Resolves true only if the Worker confirms it saved it.
+async function postSignup(email){
+  const ctrl=(typeof AbortController!=='undefined')?new AbortController():null;
+  const timer=ctrl?setTimeout(()=>ctrl.abort(),10000):null;
+  try{
+    const r=await fetch(SIGNUP_URL+'/subscribe',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email}),
+      signal:ctrl?ctrl.signal:undefined
+    });
+    if(!r.ok)return false;
+    const d=await r.json();
+    return !!(d&&d.ok===true);
+  }catch(e){return false;}
+  finally{if(timer)clearTimeout(timer);}
+}
+// Once per browser: send an address saved locally before the sign-up list existed (or one that could not be sent earlier).
+async function syncSavedEmail(){
+  try{
+    const saved=localStorage.getItem('macroEmail');
+    if(!saved||localStorage.getItem('macroEmailSynced')==='1')return;
+    if(await postSignup(saved)){
+      localStorage.setItem('macroEmailSynced','1');
+      const btn=document.getElementById('emailCaptureBtn');
+      if(btn){btn.textContent='✓ Subscribed — '+saved;btn.style.opacity='.6';btn.disabled=true;}
+    }
+  }catch(e){}
+}
+let _emailSubmitting=false;
+async function submitEmail(){
+  if(_emailSubmitting)return;
   const val=document.getElementById('emailInput')?.value?.trim();
   if(!val||!val.includes('@')){
     document.getElementById('emailInput').style.borderColor='var(--accent2)';
     setTimeout(()=>document.getElementById('emailInput').style.borderColor='var(--border2)',1500);
     return;
   }
-  // Save locally
+  _emailSubmitting=true;
+  // Keep locally either way
   try{localStorage.setItem('macroEmail',val);}catch(e){}
+  const saved=await postSignup(val);
+  _emailSubmitting=false;
+  if(!saved){
+    showToast&&showToast('⚠️','Could not save right now','Your email is kept on this device. Try again later.');
+    return;
+  }
+  try{localStorage.setItem('macroEmailSynced','1');}catch(e){}
   // Update button
   const btn=document.getElementById('emailCaptureBtn');
-  if(btn){btn.textContent='✓ Subscribed! Check your inbox';btn.style.opacity='.6';btn.disabled=true;}
+  if(btn){btn.textContent='✓ Subscribed! You\'re on the list';btn.style.opacity='.6';btn.disabled=true;}
   // Track
   trackAffClick('email_capture');
   closeEmailModal();
-  showToast&&showToast('📧','Subscribed!','Check your inbox — free PDF on its way');
+  showToast&&showToast('📧','Subscribed!','You\'re on the list');
   addXP&&addXP(25,'Joined MACRO newsletter');
   fireConfetti&&fireConfetti();
-
-  // TODO: Replace with your actual form endpoint (Mailchimp, ConvertKit, Beehiiv, etc.)
-  // fetch('https://your-form-endpoint.com/subscribe', {method:'POST', body:JSON.stringify({email:val})});
 }
+setTimeout(syncSavedEmail,3000);
 
 // ═══════════════════════════════════
 // GUMROAD / SALE
@@ -6374,7 +6414,7 @@ const PAGE_CONTENT = {
         {icon:'🔒', title:'No Data Collection', body:'MACRO does not collect, transmit, or store any personal data on external servers. Zero. The app has no backend, no database, no analytics pipeline. Nothing you enter ever leaves your device.'},
         {icon:'📱', title:'Local Storage Only', body:'All your data — meal plans, weight logs, supplement selections, progress, XP, badges, streaks — is stored exclusively in your browser\'s localStorage and IndexedDB. It lives on your device and nowhere else.'},
         {icon:'🚫', title:'No Ads. Ever.', body:'MACRO contains no advertising, no ad networks, no tracking pixels, no retargeting infrastructure. Supplement "Buy" links are Amazon affiliate links that earn a small commission at no cost to you — this is disclosed in the supplement section.'},
-        {icon:'📧', title:'Email (Optional)', body:'If you choose to enter your email for the free PDF, that address is stored locally on your device. It is never transmitted anywhere unless you explicitly submit it through a third-party form. You can clear it anytime via Settings → Reset All Data.'},
+        {icon:'📧', title:'Email (Optional)', body:'If you choose to enter your email for the free PDF, that address is sent to and stored by the MACRO sign-up list, along with the date and the page you signed up from. Nothing else about you is sent with it. A copy is also kept on your device, and you can clear that copy anytime via Settings → Reset All Data.'},
         {icon:'🤖', title:'AI Chat', body:'The AI chat feature sends your messages to Anthropic\'s Claude API via a proxy. Messages include your protein target, store, and diet type for context. Anthropic\'s privacy policy governs that data. No personally identifiable information is included unless you type it yourself.'},
         {icon:'🍪', title:'No Cookies', body:'MACRO uses no cookies, no session tokens, no fingerprinting, and no cross-site tracking of any kind. It is a self-contained HTML file.'},
         {icon:'👶', title:'Children\'s Privacy', body:'MACRO is designed for adults 18 and over. We do not knowingly collect information from anyone under 18.'},
