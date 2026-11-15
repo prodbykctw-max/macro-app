@@ -552,6 +552,11 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;hei
 .swap-overlay.open{display:flex}
 .swap-modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2) var(--r2) 0 0;width:100%;max-height:82vh;display:flex;flex-direction:column;overflow:hidden;animation:slideUp .25s ease}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+/* Glide: the tapped card/button grows into its sheet and shrinks back (View Transitions). Motion only. */
+::view-transition-group(glide-card){animation-duration:320ms;animation-timing-function:cubic-bezier(.2,.8,.2,1)}
+html.glide-back::view-transition-group(glide-card){animation-duration:280ms;animation-timing-function:cubic-bezier(.4,0,.2,1)}
+::view-transition-old(root),::view-transition-new(root){animation-duration:300ms}
+html.glide-back::view-transition-old(root),html.glide-back::view-transition-new(root){animation-duration:260ms}
 .swap-hdr{padding:14px 16px 10px;border-bottom:1px solid var(--border);position:relative}
 .swap-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 12px}
 .swap-title{font-family:'Bebas Neue',sans-serif;font-size:18px;font-weight:700;margin-bottom:2px}
@@ -799,7 +804,7 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
     </div>
     <div class="hdr-right" style="display:flex;align-items:center;gap:6px">
       <div class="hdr-badge" id="streakBadge" title="Day streak">🔥 0</div>
-      <button onclick="openSettings()" title="Settings" aria-label="Open settings"
+      <button onclick="openSettings(this)" title="Settings" aria-label="Open settings"
         style="width:32px;height:32px;border-radius:50%;background:var(--bg3);border:1px solid var(--border);color:var(--muted);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:rgba(0,0,0,0);flex-shrink:0">
         ⚙️
       </button>
@@ -1485,7 +1490,7 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
             <div style="font-size:12px;font-weight:700">Smart Notifications</div>
             <div style="font-size:10px;color:var(--muted);margin-top:2px">Managed in Settings ⚙️ — tap the gear icon in the header</div>
           </div>
-          <button onclick="closeAllPanels();openSettings()"
+          <button onclick="closeAllPanels();openSettings(this)"
             style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);color:var(--muted);font-size:10px;font-weight:700;padding:5px 10px;cursor:pointer;font-family:'Inter',sans-serif;-webkit-tap-highlight-color:rgba(0,0,0,0);flex-shrink:0">
             Open ↗
           </button>
@@ -1617,7 +1622,7 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
         <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:13px;margin-bottom:8px">
           <div style="font-size:13px;font-weight:700;margin-bottom:4px">&#x1F4E7; Free Weekly Meal Plans</div>
           <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.5">Get a free high-protein meal plan PDF + supplement timing guide delivered to your inbox every week.</div>
-          <button onclick="openEmailModal()" id="emailCaptureBtn"
+          <button onclick="openEmailModal(this)" id="emailCaptureBtn"
             style="width:100%;background:var(--accent);color:#000;border:none;border-radius:var(--r);font-size:13px;font-weight:700;padding:10px;cursor:pointer;font-family:'Inter',sans-serif;-webkit-tap-highlight-color:rgba(0,0,0,0)">
             Get Free PDF &#x2192;
           </button>
@@ -3639,11 +3644,22 @@ function openSwap(index){
   const current=state.mealPlan[index];
   document.getElementById('swapSubLabel').textContent=`Replacing: ${current.emoji} ${current.name}`;
   document.getElementById('swapSearch').value='';
-  document.getElementById('swapOverlay').classList.add('open');
   renderSwapList();
-  setTimeout(()=>document.getElementById('swapSearch').focus(),100);
+  const ov=document.getElementById('swapOverlay');
+  // The tapped meal card grows into the swap sheet.
+  glideOpen(glideMealCard(index),()=>{
+    ov.classList.add('open');
+    setTimeout(()=>document.getElementById('swapSearch').focus(),100);
+  },()=>ov.querySelector('.swap-modal'));
 }
-function closeSwap(){registerModalClose('swap');document.getElementById('swapOverlay').classList.remove('open');swapTargetIndex=null;}
+function closeSwap(){
+  const idx=swapTargetIndex;
+  registerModalClose('swap');
+  const ov=document.getElementById('swapOverlay');
+  swapTargetIndex=null;
+  // The sheet shrinks back into the card it came from (looked up after any re-render).
+  glideClose(ov.querySelector('.swap-modal'),()=>ov.classList.remove('open'),()=>glideMealCard(idx));
+}
 function closeSwapIfBg(e){if(e.target===document.getElementById('swapOverlay'))closeSwap();}
 function renderSwapList(){
   const query=document.getElementById('swapSearch').value.toLowerCase().trim();
@@ -4167,14 +4183,19 @@ function openSidesPicker(mealIdx){
   sidesPickedTemp = meal.selectedSides ? [...meal.selectedSides] : [];
   document.getElementById('sidesSubLabel').textContent = `For: ${meal.emoji} ${meal.name}`;
   renderSidesList();
-  document.getElementById('sidesOverlay').style.display = 'flex';
+  const ov = document.getElementById('sidesOverlay');
+  // The tapped Sides button grows into the picker sheet.
+  glideOpen(glideSidesBtn(mealIdx), ()=>{ ov.style.display = 'flex'; }, ()=>ov.firstElementChild);
 }
 
 function closeSidesPicker(){
+  const idx = sidesMealIndex;
   registerModalClose('sides');
-  document.getElementById('sidesOverlay').style.display = 'none';
+  const ov = document.getElementById('sidesOverlay');
   sidesMealIndex = null;
   sidesPickedTemp = [];
+  // The sheet shrinks back into the button it came from (looked up after any re-render).
+  glideClose(ov.firstElementChild, ()=>{ ov.style.display = 'none'; }, ()=>glideSidesBtn(idx));
 }
 
 function closeSidesIfBg(e){
@@ -4862,10 +4883,13 @@ function checkStreakWarning(){
 // ═══════════════════════════════════
 // SETTINGS PANEL
 // ═══════════════════════════════════
-function openSettings(){
+function openSettings(originBtn){
   registerModalOpen('settings');
   const el = document.getElementById('settingsOverlay');
-  if(el){ el.style.display='flex'; updateSettingsLiteUI(); updateSettingsNotifUI(); loadUserPrefs(); }
+  if(el){
+    updateSettingsLiteUI(); updateSettingsNotifUI(); loadUserPrefs();
+    glidePopOpen(el, el.firstElementChild, originBtn || document.querySelector('button[aria-label="Open settings"]'), ()=>{ el.style.display='flex'; });
+  }
 }
 
 function updateSettingsNotifUI(){
@@ -4906,7 +4930,7 @@ function closeAllPanels(){ /* just opens settings overlay, panels stay */ }
 function closeSettings(){
   registerModalClose('settings');
   const el = document.getElementById('settingsOverlay');
-  if(el) el.style.display='none';
+  if(el) glidePopClose(el, el.firstElementChild, ()=>{ el.style.display='none'; });
 }
 function closeSettingsIfBg(e){
   if(e.target===document.getElementById('settingsOverlay')) closeSettings();
@@ -5009,15 +5033,18 @@ function initConnectPanel(){
 // ═══════════════════════════════════
 // EMAIL CAPTURE
 // ═══════════════════════════════════
-function openEmailModal(){
+function openEmailModal(originBtn){
   registerModalOpen('emailModal');
   try{if(localStorage.getItem('macroEmail')&&localStorage.getItem('macroEmailSynced')==='1'){showToast&&showToast('✓','Already subscribed!','You\'re already on the list');return;}}catch(e){}
-  document.getElementById('emailModal').style.display='flex';
+  const em=document.getElementById('emailModal');
+  // Grows out of the button that opened it (from the centre when opened by the timer).
+  glidePopOpen(em, em.firstElementChild, (originBtn&&originBtn.nodeType===1)?originBtn:null, ()=>{ em.style.display='flex'; });
   setTimeout(()=>document.getElementById('emailInput')?.focus(),200);
 }
 function closeEmailModal(){
   registerModalClose('emailModal');
-  document.getElementById('emailModal').style.display='none';
+  const em=document.getElementById('emailModal');
+  glidePopClose(em, em.firstElementChild, ()=>{ em.style.display='none'; });
   try{localStorage.setItem('macroEmailDismissed','1');}catch(e){}
 }
 function closeEmailIfBg(e){if(e.target===document.getElementById('emailModal'))closeEmailModal();}
@@ -5876,6 +5903,124 @@ function registerModalOpen(id){
 function registerModalClose(id){
   _openModals.delete(id);
   if(_openModals.size === 0) document.body.classList.remove('modal-open');
+}
+
+// ═══════════════════════════════════
+// GLIDE — nothing just appears
+// Card/button -> sheet morph (View Transitions) and menus that grow out of their button (Web Animations).
+// Motion only: every update callback does exactly what the instant code did. Reduced motion or no API = instant.
+// ═══════════════════════════════════
+const GLIDE_OUT='cubic-bezier(.2,.8,.2,1)', GLIDE_BACK='cubic-bezier(.4,0,.2,1)';
+let _glideVT=null, _glideTok=0, _glideEls=[];
+function glideReduced(){
+  try{ return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); }catch(e){ return false; }
+}
+function glideShown(el){ return !!(el && el.isConnected && (el.offsetWidth||el.offsetHeight)); }
+function glideMealCard(i){ return document.querySelector('#mealsGrid .meal-card:nth-child('+((+i)+1)+')'); }
+function glideSidesBtn(i){
+  const c=glideMealCard(i);
+  return c ? c.querySelector('button[onclick^="openSidesPicker("]') : null;
+}
+function glideClearNames(){
+  _glideEls.forEach(e=>{ try{ e.style.removeProperty('view-transition-name'); }catch(_){} });
+  _glideEls=[];
+}
+function glideSettle(el){
+  // Let the destination show its settled look (cancel its own entrance animation) so the morph lands on it.
+  try{
+    el.getAnimations().forEach(a=>{
+      if(a.animationName==='slideUp'||a.animationName==='slideIn'){ a.animationName==='slideUp' ? a.cancel() : a.finish(); }
+    });
+  }catch(_){}
+}
+function glideVT(src, update, getDest, back){
+  if(!document.startViewTransition || glideReduced() || !glideShown(src)){
+    // Instant path. If an earlier transition's update is still pending, run after it so order is kept.
+    if(_glideVT){ _glideVT.updateCallbackDone.then(update,update); } else update();
+    return;
+  }
+  if(_glideVT){ try{ _glideVT.skipTransition(); }catch(_){} }
+  glideClearNames();
+  const tok=++_glideTok;
+  src.style.setProperty('view-transition-name','glide-card');
+  _glideEls=[src];
+  const root=document.documentElement;
+  root.classList.toggle('glide-back', !!back);
+  let vt;
+  try{
+    vt=document.startViewTransition(()=>{
+      src.style.removeProperty('view-transition-name');
+      update();
+      if(tok!==_glideTok) return;   // superseded by a newer glide: update only, no naming
+      const d=getDest();
+      if(d && d.isConnected){
+        glideSettle(d);
+        d.style.setProperty('view-transition-name','glide-card');
+        _glideEls=[d];
+      }
+    });
+  }catch(e){ glideClearNames(); update(); return; }
+  _glideVT=vt;
+  vt.ready.catch(()=>{}); vt.updateCallbackDone.catch(()=>{});
+  const done=()=>{
+    if(tok===_glideTok){ glideClearNames(); _glideVT=null; root.classList.remove('glide-back'); }
+  };
+  vt.finished.then(done,done);
+}
+function glideOpen(srcEl, update, getDest){ glideVT(srcEl, update, getDest, false); }
+function glideClose(sheetEl, update, getDest){ glideVT(sheetEl, update, getDest, true); }
+
+function glideCssCancel(el){
+  try{ el.getAnimations().forEach(a=>{ if(a.animationName) a.cancel(); }); }catch(_){}
+}
+function glideOrigin(panel, origin){
+  const pr=panel.getBoundingClientRect();
+  if(origin && origin.isConnected){
+    const r=origin.getBoundingClientRect();
+    if(r.width||r.height) return {x:r.left+r.width/2-pr.left, y:r.top+r.height/2-pr.top};
+  }
+  return {x:pr.width/2, y:pr.height/2};
+}
+function glideStop(overlay, panel){
+  (panel._glideAnims||[]).forEach(a=>{ try{ a.cancel(); }catch(_){} });
+  panel._glideAnims=[];
+  panel.style.removeProperty('transform-origin');
+  overlay._glideClosing=false;
+}
+const _glideOrigins=new WeakMap();
+// Open: show the overlay, then grow its panel out of the button.
+function glidePopOpen(overlay, panel, origin, show){
+  glideStop(overlay, panel);
+  show();
+  if(!panel || !panel.animate || glideReduced()){ return; }
+  _glideOrigins.set(overlay, origin||null);
+  glideCssCancel(panel);
+  const o=glideOrigin(panel, origin);
+  panel.style.transformOrigin=o.x+'px '+o.y+'px';
+  const bg=getComputedStyle(overlay).backgroundColor;
+  const a=panel.animate([{transform:'scale(.7)',opacity:0},{transform:'none',opacity:1}],{duration:240,easing:GLIDE_OUT});
+  const b=overlay.animate([{backgroundColor:'rgba(0,0,0,0)'},{backgroundColor:bg}],{duration:240,easing:GLIDE_OUT});
+  panel._glideAnims=[a,b];
+  a.finished.then(()=>{ if(panel._glideAnims && panel._glideAnims[0]===a) glideStop(overlay, panel); }).catch(()=>{});
+}
+// Close: shrink the panel back into the same button, THEN hide.
+function glidePopClose(overlay, panel, hide){
+  if(overlay._glideClosing) return;
+  if(!panel || !panel.animate || glideReduced() || !glideShown(overlay)){ glideStop(overlay, panel||overlay); hide(); return; }
+  glideStop(overlay, panel);
+  overlay._glideClosing=true;
+  let origin=_glideOrigins.get(overlay);
+  if(!(origin && origin.isConnected)){
+    origin=(overlay.id==='settingsOverlay')?document.querySelector('button[aria-label="Open settings"]')
+          :(overlay.id==='emailModal')?document.getElementById('emailCaptureBtn'):null;
+  }
+  const o=glideOrigin(panel, origin);
+  const bg=getComputedStyle(overlay).backgroundColor;
+  panel.style.transformOrigin=o.x+'px '+o.y+'px';
+  const a=panel.animate([{transform:'none',opacity:1},{transform:'scale(.7)',opacity:0}],{duration:200,easing:GLIDE_BACK,fill:'forwards'});
+  const b=overlay.animate([{backgroundColor:bg},{backgroundColor:'rgba(0,0,0,0)'}],{duration:200,easing:GLIDE_BACK,fill:'forwards'});
+  panel._glideAnims=[a,b];
+  a.finished.then(()=>{ glideStop(overlay, panel); hide(); }).catch(()=>{});
 }
 
 // ═══════════════════════════════════
