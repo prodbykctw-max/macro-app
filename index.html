@@ -3707,7 +3707,7 @@ function toggleSearch(){
   searchOpen = !searchOpen;
   const drawer = document.getElementById('searchDrawer');
   const fab = document.getElementById('searchFab');
-  drawer.classList.toggle('open', searchOpen);
+  glideDrawer(drawer, fab, searchOpen, ()=>drawer.classList.toggle('open', searchOpen));
   fab.style.background = searchOpen ? 'var(--accent2)' : 'var(--accent)';
   fab.innerHTML = searchOpen ? '<span style="font-family:\'Oswald\',sans-serif;font-size:12px;font-weight:600;letter-spacing:.06em;color:#000">✕</span>' : '<span style="font-family:\'Oswald\',sans-serif;font-size:12px;font-weight:600;letter-spacing:.12em;color:#000">CHAT</span>';
   if(searchOpen){ renderAiMessages(); setTimeout(()=>document.getElementById('aiInput')?.focus(),150); }
@@ -3715,8 +3715,36 @@ function toggleSearch(){
 document.addEventListener('click',e=>{
   if(!searchOpen) return;
   const drawer=document.getElementById('searchDrawer');const fab=document.getElementById('searchFab');
-  if(!drawer.contains(e.target)&&!fab.contains(e.target)){searchOpen=false;drawer.classList.remove('open');fab.style.background='var(--accent)';fab.innerHTML='<span style="font-family:\'Oswald\',sans-serif;font-size:12px;font-weight:600;letter-spacing:.12em;color:#000">CHAT</span>';}
+  if(!drawer.contains(e.target)&&!fab.contains(e.target)){searchOpen=false;glideDrawer(drawer,fab,false,()=>drawer.classList.remove('open'));fab.style.background='var(--accent)';fab.innerHTML='<span style="font-family:\'Oswald\',sans-serif;font-size:12px;font-weight:600;letter-spacing:.12em;color:#000">CHAT</span>';}
 });
+// The chat drawer grows out of the CHAT button and shrinks back into it. Motion only: the 'open' class flips at once,
+// exactly as before; on close the drawer is just kept painted (click-through) for the length of the shrink.
+function glideDrawer(drawer, fab, open, update){
+  const was=drawer._glideAnim; if(was){ drawer._glideAnim=null; try{ was.cancel(); }catch(_){} }
+  drawer.style.removeProperty('display'); drawer.style.removeProperty('pointer-events'); drawer.style.removeProperty('transform-origin');
+  if(!drawer.animate || glideReduced()){ update(); return; }
+  if(open){
+    update();
+    if(!glideShown(drawer)) return;
+    glideCssCancel(drawer);
+    const o=glideOrigin(drawer, fab);
+    drawer.style.transformOrigin=o.x+'px '+o.y+'px';
+    const a=drawer.animate([{transform:'scale(.3)',opacity:0},{transform:'none',opacity:1}],{duration:240,easing:GLIDE_OUT});
+    drawer._glideAnim=a;
+    a.finished.then(()=>{ if(drawer._glideAnim===a){ drawer._glideAnim=null; drawer.style.removeProperty('transform-origin'); } }).catch(()=>{});
+    return;
+  }
+  const shown=glideShown(drawer), o=shown ? glideOrigin(drawer, fab) : null;
+  update();
+  if(!shown) return;
+  drawer.style.display='flex'; drawer.style.pointerEvents='none';
+  drawer.style.transformOrigin=o.x+'px '+o.y+'px';
+  const a=drawer.animate([{transform:'none',opacity:1},{transform:'scale(.3)',opacity:0}],{duration:200,easing:GLIDE_BACK,fill:'forwards'});
+  drawer._glideAnim=a;
+  const end=()=>{ if(drawer._glideAnim!==a) return; drawer._glideAnim=null; try{ a.cancel(); }catch(_){}
+    drawer.style.removeProperty('display'); drawer.style.removeProperty('pointer-events'); drawer.style.removeProperty('transform-origin'); };
+  a.finished.then(end).catch(()=>{}); setTimeout(end, 350);
+}
 function initSearchSuggestions(){ renderAiMessages(); } // kept for init compat
 
 // ═══════════════════════════════════
