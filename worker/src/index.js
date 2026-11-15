@@ -4,6 +4,19 @@
 const MAX_BODY_BYTES = 2048;
 const MAX_EMAIL_LENGTH = 254;
 const KEY_PREFIX = 'email:';
+// Security audit 2026-11-15:
+// - A real address shape (linear regex: the domain parts can't overlap, so no
+//   ReDoS) instead of "contains an @", which let "@" and "x y@" in.
+// - Length in BYTES: a KV key is capped at 512 bytes, and 254 non-ASCII
+//   characters threw an unhandled 500.
+// - Zero-width / direction-override / control characters refused, so one inbox
+//   can't be signed up many times as "different" addresses.
+const EMAIL_RE = /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/;
+const INVISIBLE_RE = /[\u0000-\u001F\u007F-\u009F\u00AD\u061C\u180E\u200B-\u200F\u202A-\u202E\u2060-\u2064\u2066-\u206F\uFEFF]/;
+export function emailOk(email) {
+  return !!email && new TextEncoder().encode(email).length <= MAX_EMAIL_LENGTH
+    && !INVISIBLE_RE.test(email) && EMAIL_RE.test(email);
+}
 
 function allowedOrigins(env) {
   return String(env.ALLOWED_ORIGINS || '')
@@ -53,6 +66,13 @@ async function handleSubscribe(request, env) {
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
   if (request.method !== 'POST') return json({ ok: false, error: 'method_not_allowed' }, 405, cors);
 
+  // The Origin check stops other websites, not scripts (they can send any
+  // Origin), so sign-ups are also rate limited per IP. (Security audit 2026-11-15.)
+  if (env.SIGNUP_LIMIT) {
+    const { success } = await env.SIGNUP_LIMIT.limit({ key: request.headers.get('CF-Connecting-IP') || 'unknown' });
+    if (!success) return json({ ok: false, error: 'too_many_requests' }, 429, cors);
+  }
+
   const declared = Number(request.headers.get('Content-Length') || 0);
   if (declared > MAX_BODY_BYTES) return json({ ok: false, error: 'too_large' }, 413, cors);
   const text = await request.text();
@@ -67,10 +87,13 @@ async function handleSubscribe(request, env) {
     return json({ ok: false, error: 'bad_request' }, 400, cors);
   }
   const email = body && typeof body.email === 'string' ? body.email.trim().toLowerCase() : '';
-  if (!email || !email.includes('@') || email.length > MAX_EMAIL_LENGTH) {
+  if (!emailOk(email)) {
     return json({ ok: false, error: 'invalid_email' }, 400, cors);
   }
 
+  // Already signed up: keep the first record (its original time) and answer the
+  // same way, so the reply never tells anyone whether an address is on the list.
+  if (await env.SIGNUPS.get(KEY_PREFIX + email)) return json({ ok: true }, 200, cors);
   await env.SIGNUPS.put(
     KEY_PREFIX + email,
     JSON.stringify({ email, timestamp: new Date().toISOString(), origin })

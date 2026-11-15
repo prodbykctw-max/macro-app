@@ -10,3 +10,9 @@ binding = "SIGNUPS"
 id = "eeddb4ecfb4d46f28aa20186679063eb"
 
 # EXPORT_KEY is a secret, not a var. Set it with: npx wrangler secret put EXPORT_KEY
+
+# POST /subscribe: 5 per minute per IP (security audit 2026-11-15).
+[[ratelimits]]
+name = "SIGNUP_LIMIT"
+namespace_id = "2004"
+simple = { limit = 5, period = 60 }
