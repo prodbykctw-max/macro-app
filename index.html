@@ -1108,7 +1108,7 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
       </div>
       <div id="mealsGrid"></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
-        <button onclick="openGroceryList()" class="btn btn-ghost" style="font-size:12px;padding:10px">🛒 Grocery List</button>
+        <button onclick="openGroceryList(this)" class="btn btn-ghost" style="font-size:12px;padding:10px">🛒 Grocery List</button>
         <button onclick="goToRecipes()" class="btn btn-ghost" style="font-size:12px;padding:10px">📖 Recipes</button>
       </div>
       <div class="nav-buttons"><button class="btn btn-ghost" onclick="goToPanel(2)">← Back</button><button class="btn btn-primary" onclick="goToPanel(4)">Cost →</button></div>
@@ -1672,15 +1672,15 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
 
         <!-- Page links -->
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
-          <button onclick="openPage('about')"
+          <button onclick="openPage('about',this)"
             style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:9px 6px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text);-webkit-tap-highlight-color:rgba(0,0,0,0)">
             👤 About
           </button>
-          <button onclick="openPage('facts')"
+          <button onclick="openPage('facts',this)"
             style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:9px 6px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text);-webkit-tap-highlight-color:rgba(0,0,0,0)">
             🔬 Science
           </button>
-          <button onclick="openPage('privacy')"
+          <button onclick="openPage('privacy',this)"
             style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:9px 6px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text);-webkit-tap-highlight-color:rgba(0,0,0,0)">
             🔒 Privacy
           </button>
@@ -2222,7 +2222,7 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
 <button class="search-fab" id="searchFab" onclick="toggleSearch()" aria-label="Open AI chat"><span style="font-family:'Oswald',sans-serif;font-size:12px;font-weight:600;letter-spacing:.12em;color:#000">CHAT</span></button>
 
   <!-- Music FAB -->
-  <button class="music-fab" id="musicFab" onclick="openMusicPage()" aria-label="Open KCTW music page">
+  <button class="music-fab" id="musicFab" onclick="openMusicPage(this)" aria-label="Open KCTW music page">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="#1DB954"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
     <span style="font-family:'Oswald',sans-serif;font-size:11px;font-weight:600;letter-spacing:.1em;color:#fff">KCTW</span>
   </button>
@@ -5627,17 +5627,25 @@ function buildGroceryItems(){
   });
   return items;
 }
-function openGroceryList(){
+let _glideGrocerySrc=null;
+function openGroceryList(originBtn){
   registerModalOpen('grocery');
   groceryItems=buildGroceryItems();
   if(!groceryItems.length&&(!state.mealPlan||!state.mealPlan.length)){
     showToast&&showToast('⚠️','No plan yet','Generate a meal plan first, then open the grocery list');
     return;
   }
-  document.getElementById('groceryOverlay').style.display='flex';
+  const ov=document.getElementById('groceryOverlay');
   renderGrocery();
+  // The tapped Grocery List button grows into the sheet.
+  _glideGrocerySrc=(originBtn&&originBtn.nodeType===1)?originBtn:null;
+  glideOpen(_glideGrocerySrc||document.querySelector('button[onclick^="openGroceryList("]'),()=>{ov.style.display='flex';},()=>ov.firstElementChild);
 }
-function closeGroceryList(){registerModalClose('grocery');document.getElementById('groceryOverlay').style.display='none';}
+function closeGroceryList(){
+  registerModalClose('grocery');
+  const ov=document.getElementById('groceryOverlay');
+  glideClose(ov.firstElementChild,()=>{ov.style.display='none';},()=>(_glideGrocerySrc&&_glideGrocerySrc.isConnected)?_glideGrocerySrc:document.querySelector('button[onclick^="openGroceryList("]'));
+}
 function closeGroceryIfBg(e){if(e.target===document.getElementById('groceryOverlay'))closeGroceryList();}
 function renderGrocery(query=''){
   const el=document.getElementById('groceryContent');if(!el)return;
@@ -5930,6 +5938,7 @@ function glideSettle(el){
   try{
     el.getAnimations().forEach(a=>{
       if(a.animationName==='slideUp'||a.animationName==='slideIn'){ a.animationName==='slideUp' ? a.cancel() : a.finish(); }
+      else if(a.transitionProperty){ a.finish(); }   // e.g. the music button finishing its un-hide
     });
   }catch(_){}
 }
@@ -6575,20 +6584,27 @@ const PAGE_CONTENT = {
     </div>`
 };
 
-function openPage(page) {
+let _glidePageSrc=null, _glidePageName=null;
+function glidePageBtn(){
+  if(_glidePageSrc && _glidePageSrc.isConnected) return _glidePageSrc;
+  return _glidePageName ? document.querySelector('button[onclick^="openPage(\''+_glidePageName+'\'"]') : null;
+}
+function openPage(page, originBtn) {
   registerModalOpen('pageModal');
   const modal = document.getElementById('pageModal');
   const content = document.getElementById('pageContent');
   if (!modal || !content) return;
   content.innerHTML = PAGE_CONTENT[page] || '<div style="padding:40px;color:var(--muted);text-align:center">Page not found</div>';
-  modal.style.display = 'block';
-  modal.scrollTop = 0;
+  _glidePageName = page;
+  _glidePageSrc = (originBtn && originBtn.nodeType===1) ? originBtn : null;
+  // The tapped About/Science/Privacy button grows into the page.
+  glideOpen(glidePageBtn(), () => { modal.style.display = 'block'; modal.scrollTop = 0; }, () => modal);
 }
 
 function closePage() {
   registerModalClose('pageModal');
   const modal = document.getElementById('pageModal');
-  if (modal) modal.style.display = 'none';
+  if (modal) glideClose(modal, () => { modal.style.display = 'none'; }, glidePageBtn);
 }
 
 function closePageIfBg(e) {
@@ -6599,15 +6615,17 @@ function closePageIfBg(e) {
 // ═══════════════════════════════════
 // MUSIC PAGE
 // ═══════════════════════════════════
-function openMusicPage() {
-  registerModalOpen('musicPage');
+function openMusicPage(originBtn) {
   const modal = document.getElementById('musicPageModal');
-  if (modal) { modal.style.display = 'block'; modal.scrollTop = 0; }
+  const fab = (originBtn && originBtn.nodeType===1) ? originBtn : document.getElementById('musicFab');
+  if (!modal) { registerModalOpen('musicPage'); return; }
+  // The KCTW button grows into the page. Its hide-the-FABs class is applied with the page so the button is not mid-fade in the snapshot.
+  glideOpen(fab, () => { registerModalOpen('musicPage'); modal.style.display = 'block'; modal.scrollTop = 0; }, () => modal);
 }
 function closeMusicPage() {
-  registerModalClose('musicPage');
   const modal = document.getElementById('musicPageModal');
-  if (modal) modal.style.display = 'none';
+  if (!modal) { registerModalClose('musicPage'); return; }
+  glideClose(modal, () => { registerModalClose('musicPage'); modal.style.display = 'none'; }, () => document.getElementById('musicFab'));
 }
 
 // ═══════════════════════════════════
