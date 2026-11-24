@@ -124,7 +124,7 @@ body[data-theme="C"] .nav-btn.active::after{background:#FFFFFF!important}
 
 /* ── THEME SWITCHER ── */
 .theme-switcher{display:flex;gap:6px;margin-bottom:14px}
-.theme-btn{flex:1;padding:10px 4px;border-radius:var(--r);border:2px solid var(--border);background:var(--bg3);cursor:pointer;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;color:var(--muted);text-align:center;transition:all .2s;-webkit-tap-highlight-color:rgba(0,0,0,0)}
+.theme-btn{flex:1;padding:10px 4px;border-radius:var(--r);border:2px solid var(--border);background:var(--bg3);cursor:pointer;font-family:'Inter',sans-serif;font-size:10px;font-weight:700;color:var(--muted);text-align:center;transition:background-color .2s, border-color .2s, color .2s;-webkit-tap-highlight-color:rgba(0,0,0,0)}
 .theme-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(200,255,0,.04)}
 .theme-preview{height:12px;border-radius:3px;margin-bottom:5px}
 html{height:100%;background:var(--bg);color-scheme:dark}
@@ -172,12 +172,17 @@ body{
   overflow-y:scroll;
   overflow-x:hidden;
   -webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;
   padding:18px 16px 28px;
 }
 .app-content::-webkit-scrollbar{display:none}
 
 /* ── PANELS ── */
 /* Respect reduced motion preference — saves battery + a11y win */
+/* ── Keyboard accessibility (keyboard focus only; mouse/touch unchanged) ── */
+button:focus-visible,[role="button"]:focus-visible,[tabindex="0"]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tab-btn,.proto-tab,.tag,.cut-tag,.sl-btn,.day-num-btn,.ff-filter,.ff-action-btn,.engine-btn,.sug-pill,.apply-btn,.search-go-btn,.regen-btn,.swap-btn,.diet-card,.swap-option,.theme-btn,.unit-btn,[role="button"]{touch-action:manipulation}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -289,7 +294,7 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;hei
 
 /* ── PRESETS ── */
 .presets{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
-.preset-btn{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--muted);font-size:12px;font-weight:600;padding:6px 4px;cursor:pointer;text-align:center;font-family:'Inter',sans-serif;transition:all .15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.preset-btn{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--muted);font-size:12px;font-weight:600;padding:6px 4px;cursor:pointer;text-align:center;font-family:'Inter',sans-serif;transition:background-color .15s, border-color .15s, color .15s, transform .15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .preset-btn:active{transform:scale(.94)}
 .preset-btn small{display:block;font-size:8px;font-weight:400;color:var(--muted);margin-top:1px}
 .preset-btn.selected{background:rgba(200,255,0,.08);border-color:var(--accent);color:var(--accent)}
@@ -306,12 +311,12 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;hei
 
 /* ── TABS ── */
 .tab-bar{display:flex;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:3px;margin-bottom:14px;gap:2px}
-.tab-btn{flex:1;padding:7px 4px;text-align:center;font-size:10px;font-weight:700;border-radius:7px;cursor:pointer;color:var(--muted);border:none;background:transparent;font-family:'Inter',sans-serif;transition:all .2s;letter-spacing:.03em}
+.tab-btn{flex:1;padding:7px 4px;text-align:center;font-size:10px;font-weight:700;border-radius:7px;cursor:pointer;color:var(--muted);border:none;background:transparent;font-family:'Inter',sans-serif;transition:background-color .2s, border-color .2s, color .2s;letter-spacing:.03em}
 .tab-btn.active{background:var(--accent);color:#000}
 
 /* ── STORE GRID ── */
 .store-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-.store-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:8px;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.store-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;cursor:pointer;transition:background-color .15s, border-color .15s, color .15s, transform .15s;display:flex;align-items:center;gap:8px;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .store-card:active{transform:scale(.97)}
 .store-card.selected{background:rgba(200,255,0,.06);border-color:var(--accent)}
 .store-name{font-size:12px;font-weight:600}
@@ -319,7 +324,7 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;hei
 
 /* ── DIET GRID ── */
 .diet-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px}
-.diet-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;cursor:pointer;transition:all .2s}
+.diet-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;cursor:pointer;transition:background-color .2s, border-color .2s, color .2s}
 .diet-card.selected{background:rgba(200,255,0,.06);border-color:var(--accent)}
 .diet-top{display:flex;align-items:center;gap:6px;margin-bottom:1px}
 .diet-name{font-size:12px;font-weight:600}
@@ -327,7 +332,7 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;hei
 
 /* ── TAGS ── */
 .tag-row{display:flex;flex-wrap:wrap;gap:5px}
-.tag{background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:4px 10px;font-size:11px;font-weight:500;cursor:pointer;color:var(--muted);font-family:'Inter',sans-serif;transition:all .2s}
+.tag{background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:4px 10px;font-size:11px;font-weight:500;cursor:pointer;color:var(--muted);font-family:'Inter',sans-serif;transition:background-color .2s, border-color .2s, color .2s}
 .tag.on{background:rgba(255,107,53,.1);border-color:var(--accent2);color:var(--accent2)}
 
 /* ── CUT ACCORDION ── */
@@ -340,7 +345,7 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;hei
 .cut-group.open .cut-chev{transform:rotate(180deg)}
 .cut-body{display:none;padding:6px 10px 10px;border-top:1px solid var(--border);flex-wrap:wrap;gap:5px}
 .cut-group.open .cut-body{display:flex}
-.cut-tag{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:3px 9px;font-size:10px;font-weight:500;cursor:pointer;color:var(--muted);font-family:'Inter',sans-serif;transition:all .2s}
+.cut-tag{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:3px 9px;font-size:10px;font-weight:500;cursor:pointer;color:var(--muted);font-family:'Inter',sans-serif;transition:background-color .2s, border-color .2s, color .2s}
 .cut-tag.selected{background:rgba(200,255,0,.08);border-color:var(--accent);color:var(--accent)}
 
 /* ── BUDGET ── */
@@ -365,7 +370,7 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;hei
 .calc-input:focus{border-color:var(--accent)}
 .weight-wrap{position:relative}
 .unit-toggle{position:absolute;right:0;top:0;bottom:0;display:flex;flex-direction:column;border-left:1px solid var(--border2);border-radius:0 var(--r) var(--r) 0;overflow:hidden}
-.unit-btn{flex:1;background:var(--bg3);color:var(--muted);border:none;font-size:9px;font-weight:700;cursor:pointer;padding:0 7px;font-family:'Inter',sans-serif;transition:all .2s}
+.unit-btn{flex:1;background:var(--bg3);color:var(--muted);border:none;font-size:9px;font-weight:700;cursor:pointer;padding:0 7px;font-family:'Inter',sans-serif;transition:background-color .2s, border-color .2s, color .2s}
 .unit-btn.active{background:var(--accent);color:#000}
 .unit-btn+.unit-btn{border-top:1px solid var(--border2)}
 .calc-result{background:rgba(200,255,0,.06);border:1px solid rgba(200,255,0,.2);border-radius:var(--r);padding:12px;display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -388,11 +393,11 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;hei
 /* ── MEAL CARDS ── */
 .meals-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .plan-summary{font-size:11px;color:var(--muted)}
-.regen-btn{background:transparent;border:1px solid var(--border2);color:var(--muted);border-radius:var(--r);padding:6px 12px;cursor:pointer;font-size:11px;font-family:'Inter',sans-serif;font-weight:500;transition:all .2s;display:flex;align-items:center;gap:4px}
-.regen-btn:hover{border-color:var(--accent);color:var(--accent)}
-.meal-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;margin-bottom:10px;transition:all .15s;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);touch-action:manipulation}
+.regen-btn{background:transparent;border:1px solid var(--border2);color:var(--muted);border-radius:var(--r);padding:6px 12px;cursor:pointer;font-size:11px;font-family:'Inter',sans-serif;font-weight:500;transition:background-color .2s, border-color .2s, color .2s;display:flex;align-items:center;gap:4px}
+@media (hover:hover) and (pointer:fine){.regen-btn:hover{border-color:var(--accent);color:var(--accent)}}
+.meal-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;margin-bottom:10px;transition:transform .15s, box-shadow .15s, border-color .15s;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);touch-action:manipulation}
 .meal-card:active{transform:scale(.99)}
-.meal-card:hover{box-shadow:0 2px 16px rgba(200,255,0,.08)}
+@media (hover:hover) and (pointer:fine){.meal-card:hover{box-shadow:0 2px 16px rgba(200,255,0,.08)}}
 .meal-card-top{padding:13px 14px 10px;display:flex;align-items:flex-start;gap:11px}
 .meal-emoji{font-size:26px;flex-shrink:0;line-height:1}
 .meal-info{flex:1;min-width:0}
@@ -402,7 +407,7 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;hei
 .meal-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0}
 .meal-cost{background:var(--bg2);border:1px solid var(--border);border-radius:5px;padding:3px 8px;font-size:11px;font-weight:700;color:var(--success)}
 .swap-btn{background:transparent;border:1px solid var(--border);border-radius:5px;color:var(--muted);font-size:9px;font-weight:700;padding:3px 8px;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:.05em;text-transform:uppercase}
-.swap-btn:hover{border-color:var(--accent2);color:var(--accent2)}
+@media (hover:hover) and (pointer:fine){.swap-btn:hover{border-color:var(--accent2);color:var(--accent2)}}
 .meal-macros{display:flex;gap:0;border-top:1px solid var(--border);background:var(--bg3)}
 .macro-item{flex:1;text-align:center;padding:8px 4px}
 .macro-val{font-size:14px;font-weight:700;font-family:'Bebas Neue',sans-serif}
@@ -461,7 +466,7 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;hei
 .badge-cardio{background:rgba(77,216,150,.1);color:var(--success);border:1px solid rgba(77,216,150,.2)}
 .week-time input{background:transparent;border:none;color:var(--accent);font-size:10px;font-family:'Inter',sans-serif;width:55px;outline:none;text-align:right;font-weight:700}
 .days-btns{display:flex;gap:4px}
-.day-num-btn{width:26px;height:26px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s}
+.day-num-btn{width:26px;height:26px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:background-color .2s, border-color .2s, color .2s}
 .day-num-btn.active{background:var(--accent);border-color:var(--accent);color:#000}
 
 /* ── STRETCH ── */
@@ -470,7 +475,7 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;hei
 .hydration-rule{font-size:11px;color:var(--muted);padding:3px 0;display:flex;gap:7px}
 .hydration-rule span{color:var(--success);font-weight:700;flex-shrink:0}
 .stretch-level-row{display:flex;gap:5px;margin-bottom:14px}
-.sl-btn{flex:1;padding:7px 4px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:10px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;text-align:center}
+.sl-btn{flex:1;padding:7px 4px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:10px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:background-color .2s, border-color .2s, color .2s;text-align:center}
 .sl-btn.active{border-color:var(--accent);background:rgba(200,255,0,.08);color:var(--accent)}
 .stretch-phase{margin-bottom:16px}
 .stretch-phase-hdr{padding:9px 12px;border-radius:var(--r);margin-bottom:8px}
@@ -489,7 +494,7 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;hei
 
 /* ── PROTOCOLS ── */
 .proto-tabs{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:14px}
-.proto-tab{padding:6px 10px;border-radius:16px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:10px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;white-space:nowrap}
+.proto-tab{padding:6px 10px;border-radius:16px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:10px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:background-color .2s, border-color .2s, color .2s;white-space:nowrap}
 .proto-tab.active{background:var(--accent);color:#000;border-color:var(--accent)}
 .proto-panel{display:none}
 .proto-panel.active{display:block;animation:slideIn .28s ease}
@@ -525,13 +530,13 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;hei
 .ff-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:7px}
 .ff-count{font-size:10px;color:var(--muted)}
 .ff-actions{display:flex;gap:5px}
-.ff-action-btn{border-radius:var(--r);font-size:10px;font-weight:700;padding:5px 10px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;border:1px solid}
+.ff-action-btn{border-radius:var(--r);font-size:10px;font-weight:700;padding:5px 10px;cursor:pointer;font-family:'Inter',sans-serif;transition:background-color .2s, border-color .2s, color .2s;border:1px solid}
 .ff-reset{background:transparent;border-color:var(--border2);color:var(--muted)}
 .ff-all{background:rgba(200,255,0,.08);border-color:var(--accent);color:var(--accent)}
 .ff-filters{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px}
-.ff-filter{background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:4px 9px;font-size:9px;font-weight:700;cursor:pointer;color:var(--muted);font-family:'Inter',sans-serif;transition:all .2s;letter-spacing:.03em}
+.ff-filter{background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:4px 9px;font-size:9px;font-weight:700;cursor:pointer;color:var(--muted);font-family:'Inter',sans-serif;transition:background-color .2s, border-color .2s, color .2s;letter-spacing:.03em}
 .ff-filter.active{background:rgba(200,255,0,.1);border-color:var(--accent);color:var(--accent)}
-.ff-list-item{display:flex;align-items:center;gap:12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:7px;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent}
+.ff-list-item{display:flex;align-items:center;gap:12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:7px;cursor:pointer;transition:background-color .2s, border-color .2s, color .2s, transform .2s, opacity .2s;-webkit-tap-highlight-color:transparent}
 .ff-list-item:active{transform:scale(.98)}
 .ff-list-item.selected{border-color:var(--accent);background:rgba(200,255,0,.04)}
 .ff-list-item.deselected{opacity:.5}
@@ -542,7 +547,7 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;hei
 .ff-item-tags{display:flex;flex-wrap:wrap;gap:3px}
 .ff-item-cost{font-size:12px;font-weight:700;color:var(--success);flex-shrink:0;text-align:right}
 .ff-item-cost-sub{font-size:9px;color:var(--muted);margin-top:1px;text-align:right}
-.ff-toggle{width:38px;height:22px;border-radius:11px;border:1.5px solid var(--border2);background:var(--border2);position:relative;flex-shrink:0;transition:all .2s}
+.ff-toggle{width:38px;height:22px;border-radius:11px;border:1.5px solid var(--border2);background:var(--border2);position:relative;flex-shrink:0;transition:background-color .2s, border-color .2s}
 .ff-toggle.on{background:var(--accent);border-color:var(--accent)}
 .ff-toggle-thumb{position:absolute;top:2px;left:2px;width:14px;height:14px;background:#fff;border-radius:50%;transition:left .2s}
 .ff-toggle.on .ff-toggle-thumb{left:18px}
@@ -550,7 +555,7 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;hei
 /* ── SWAP MODAL ── */
 .swap-overlay{display:none;position:absolute;inset:0;background:rgba(0,0,0,.8);z-index:500;align-items:flex-end;justify-content:center;}
 .swap-overlay.open{display:flex}
-.swap-modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2) var(--r2) 0 0;width:100%;max-height:82vh;display:flex;flex-direction:column;overflow:hidden;animation:slideUp .25s ease}
+.swap-modal{overscroll-behavior:contain;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2) var(--r2) 0 0;width:100%;max-height:82vh;max-height:82dvh;display:flex;flex-direction:column;overflow:hidden;animation:slideUp .25s ease}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 /* Glide: the tapped card/button grows into its sheet and shrinks back (View Transitions). Motion only. */
 ::view-transition-group(glide-card){animation-duration:320ms;animation-timing-function:cubic-bezier(.2,.8,.2,1)}
@@ -565,8 +570,8 @@ html.glide-back::view-transition-old(root),html.glide-back::view-transition-new(
 .swap-search-input{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-size:13px;padding:9px 12px;outline:none;margin-top:10px;font-family:'Inter',sans-serif}
 .swap-search-input:focus{border-color:var(--accent)}
 .swap-list{overflow-y:auto;flex:1;padding:10px 12px}
-.swap-option{display:flex;align-items:center;gap:10px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:9px 11px;margin-bottom:6px;cursor:pointer;transition:all .2s}
-.swap-option:hover{border-color:var(--accent)}
+.swap-option{display:flex;align-items:center;gap:10px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:9px 11px;margin-bottom:6px;cursor:pointer;transition:background-color .2s, border-color .2s, color .2s, opacity .2s}
+@media (hover:hover) and (pointer:fine){.swap-option:hover{border-color:var(--accent)}}
 .swap-option.current{opacity:.45;cursor:default}
 .swap-opt-emoji{font-size:20px;flex-shrink:0}
 .swap-opt-name{font-size:12px;font-weight:600;margin-bottom:1px}
@@ -579,11 +584,11 @@ html.glide-back::view-transition-old(root),html.glide-back::view-transition-new(
 
 /* ── SEARCH ── */
 .search-fab{position:absolute;bottom:calc(var(--nav-h) + 10px);right:14px;z-index:300;height:32px;padding:0 13px;border-radius:16px;background:var(--accent);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;box-shadow:0 4px 14px rgba(200,255,0,.22);transition:opacity .18s,transform .18s;white-space:nowrap}
-.search-fab:hover{transform:scale(1.08)}
+@media (hover:hover) and (pointer:fine){.search-fab:hover{transform:scale(1.08)}}
 .search-fab.open{background:var(--accent2)}
 /* Music FAB */
 .music-fab{position:absolute;bottom:calc(var(--nav-h) + 52px);left:14px;z-index:300;height:32px;padding:0 13px;border-radius:16px;background:#000;border:1px solid rgba(255,255,255,.15);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 4px 14px rgba(0,0,0,.5);transition:opacity .18s,transform .18s,border-color .18s;white-space:nowrap;-webkit-tap-highlight-color:rgba(0,0,0,0)}
-.music-fab:hover{transform:scale(1.05);border-color:rgba(255,255,255,.3)}
+@media (hover:hover) and (pointer:fine){.music-fab:hover{transform:scale(1.05);border-color:rgba(255,255,255,.3)}}
 
 /* Hide FABs when any modal is open */
 body.modal-open .search-fab,
@@ -612,12 +617,12 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
 .search-main-input:focus{border-color:var(--accent)}
 .search-go-btn{background:var(--accent);color:#000;border:none;border-radius:var(--r);padding:7px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif}
 .search-engines{display:flex;gap:4px;padding:8px 12px;border-bottom:1px solid var(--border);flex-wrap:wrap}
-.engine-btn{background:var(--bg3);border:1px solid var(--border);border-radius:20px;color:var(--muted);font-size:9px;font-weight:700;padding:3px 8px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s}
+.engine-btn{background:var(--bg3);border:1px solid var(--border);border-radius:20px;color:var(--muted);font-size:9px;font-weight:700;padding:3px 8px;cursor:pointer;font-family:'Inter',sans-serif;transition:background-color .2s, border-color .2s, color .2s}
 .engine-btn.active{background:rgba(200,255,0,.08);border-color:var(--accent);color:var(--accent)}
 .search-suggestions{padding:8px 12px 10px;overflow-y:auto;flex:1}
 .sug-label{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
 .sug-pill{display:inline-block;background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:4px 8px;font-size:10px;font-weight:500;cursor:pointer;color:var(--muted);margin:0 3px 4px 0;font-family:'Inter',sans-serif}
-.sug-pill:hover{border-color:var(--accent);color:var(--accent)}
+@media (hover:hover) and (pointer:fine){.sug-pill:hover{border-color:var(--accent);color:var(--accent)}}
 .search-disclaimer{padding:7px 12px;font-size:9px;color:var(--muted2);line-height:1.5;border-top:1px solid var(--border);background:var(--bg)}
 
 /* ── COST PANELS ── */
@@ -626,12 +631,12 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
 
 /* ── NAV BUTTONS ── */
 .nav-buttons{display:flex;justify-content:space-between;align-items:center;margin-top:24px;padding-top:18px;border-top:1px solid var(--border)}
-.btn{padding:11px 22px;border-radius:var(--r);font-size:13px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;transition:all .15s;border:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.btn{padding:11px 22px;border-radius:var(--r);font-size:13px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;transition:background-color .15s, border-color .15s, color .15s, transform .15s, opacity .15s;border:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .btn:active{transform:scale(.96);opacity:.88}
 .btn-primary{background:var(--accent);color:#000}
-.btn-primary:hover{background:#d0ff00;transform:translateY(-1px)}
+@media (hover:hover) and (pointer:fine){.btn-primary:hover{background:#d0ff00;transform:translateY(-1px)}}
 .btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border)}
-.btn-ghost:hover{border-color:var(--border2);color:var(--text)}
+@media (hover:hover) and (pointer:fine){.btn-ghost:hover{border-color:var(--border2);color:var(--text)}}
 .btn-success{background:var(--success);color:#000}
 
 /* ── MISC ── */
@@ -663,7 +668,7 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
 
 /* Badge grid */
 .badge-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.badge-item{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px 6px;text-align:center;transition:all .3s}
+.badge-item{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:10px 6px;text-align:center;transition:background-color .3s, border-color .3s, color .3s, opacity .3s, filter .3s}
 .badge-item.earned{border-color:var(--accent);background:rgba(200,255,0,.05)}
 .badge-item.locked{opacity:.35;filter:grayscale(1)}
 .badge-emoji{font-size:22px;margin-bottom:4px;line-height:1}
@@ -691,7 +696,7 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
 
 <div class="app">
   <!-- ACHIEVEMENT TOAST -->
-  <div class="achievement-toast" id="achievementToast">
+  <div class="achievement-toast" id="achievementToast" role="status" aria-live="polite">
     <div class="toast-emoji" id="toastEmoji">🏆</div>
     <div class="toast-body">
       <div class="toast-title" id="toastTitle">Achievement Unlocked!</div>
@@ -708,7 +713,7 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
       <div style="font-family:'Oswald',sans-serif;font-size:11px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);margin-bottom:36px">Men's Health Optimization</div>
       <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--text);letter-spacing:.04em;margin-bottom:6px">What's your name?</div>
       <div style="font-family:'Inter',sans-serif;font-size:12px;color:var(--muted);margin-bottom:22px">The app will address you personally</div>
-      <input id="onboardName" type="text" placeholder="First name"
+      <input id="onboardName" aria-label="First name" autocomplete="given-name" type="text" placeholder="First name"
         style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r2);color:var(--text);font-size:24px;font-family:'Bebas Neue',sans-serif;letter-spacing:.08em;text-align:center;padding:16px;outline:none;margin-bottom:14px;text-transform:capitalize"
         onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border2)'"
         onkeydown="if(event.key==='Enter')nextOnboard(1)">
@@ -800,7 +805,7 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
         <span class="level-pill" id="levelPill">Lv.1 Rookie</span>
         <span class="xp-next" id="xpNext">0 / 100 XP</span>
       </div>
-      <div class="xp-track"><div class="xp-fill" id="xpFill" style="width:0%"></div></div>
+      <div class="xp-track"><div class="xp-fill" id="xpFill" role="progressbar" aria-label="XP to next level" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" style="width:0%"></div></div>
     </div>
     <div class="hdr-right" style="display:flex;align-items:center;gap:6px">
       <div class="hdr-badge" id="streakBadge" title="Day streak">🔥 0</div>
@@ -832,12 +837,12 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
         <div class="calc-inputs">
           <div>
             <div class="label">Age</div>
-            <input type="number" class="calc-input" id="calcAge" placeholder="28" min="13" max="99" oninput="runCalc()" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border2)'">
+            <input type="number" class="calc-input" id="calcAge" aria-label="Age" inputmode="numeric" placeholder="28" min="13" max="99" oninput="runCalc()" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border2)'">
           </div>
           <div>
             <div class="label">Body Weight</div>
             <div class="weight-wrap">
-              <input type="number" class="calc-input" id="calcWeight" placeholder="185" min="50" max="700" style="padding-right:38px" oninput="runCalc()" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border2)'">
+              <input type="number" class="calc-input" id="calcWeight" aria-label="Body weight" inputmode="decimal" placeholder="185" min="50" max="700" style="padding-right:38px" oninput="runCalc()" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border2)'">
               <div class="unit-toggle">
                 <button class="unit-btn active" id="unit-lbs" onclick="setPrefWeightUnit('lbs')">lbs</button>
                 <button class="unit-btn" id="prefUnit-kg" onclick="setPrefWeightUnit('kg')">kg</button>
@@ -846,7 +851,7 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
           </div>
         </div>
         <div class="label">Multiplier — <span id="multDisplay" style="color:var(--accent);font-weight:700">0.90 g/lb</span></div>
-        <input type="range" id="multSlider" min="80" max="100" value="90" step="1" oninput="onMultSlider(this.value)" style="margin-bottom:4px">
+        <input type="range" id="multSlider" aria-label="Protein multiplier" min="80" max="100" value="90" step="1" oninput="onMultSlider(this.value)" style="margin-bottom:4px">
         <div class="slider-labels"><span>0.8 Min</span><span>0.9 Standard</span><span>1.0 Max</span></div>
         <div id="calcResult" style="display:none;margin-top:10px">
           <div class="calc-result">
@@ -873,11 +878,11 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
       <!-- Slider + exact — compact -->
       <div class="card" style="margin-bottom:8px;padding:7px 10px">
         <div class="label" style="margin-bottom:4px;font-size:9px">Slide to Adjust</div>
-        <input type="range" id="proteinSlider" min="50" max="600" value="150" style="margin-bottom:2px" oninput="updateProtein(this.value)">
+        <input type="range" id="proteinSlider" aria-label="Daily protein target" min="50" max="600" value="150" style="margin-bottom:2px" oninput="updateProtein(this.value)">
         <div class="slider-labels" style="margin-bottom:4px;font-size:9px"><span>50g</span><span>300g</span><span>600g+</span></div>
         <div class="divider" style="margin:5px 0"></div>
         <div class="label" style="margin-bottom:4px;font-size:9px">Enter Exact (g)</div>
-        <input type="number" class="input-num" id="proteinExact" value="150" min="50" style="font-size:17px;padding:5px" oninput="updateProteinTyping(this.value)" onblur="commitProtein(this.value)" onkeydown="if(event.key==='Enter')commitProtein(this.value)">
+        <input type="number" class="input-num" id="proteinExact" aria-label="Daily protein target in grams" inputmode="numeric" value="150" min="50" style="font-size:17px;padding:5px" oninput="updateProteinTyping(this.value)" onblur="commitProtein(this.value)" onkeydown="if(event.key==='Enter')commitProtein(this.value)">
       </div>
 
       <!-- WEIGHT LOG + ADAPTIVE ENGINE -->
@@ -910,7 +915,7 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
         <!-- Body weight input (reuses calcWeight if available) -->
         <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:5px">Body Weight</div>
         <div style="display:flex;gap:8px;margin-bottom:10px;align-items:center">
-          <input type="number" id="carbWeightInput" placeholder="185"
+          <input type="number" id="carbWeightInput" aria-label="Body weight" inputmode="decimal" placeholder="185"
             style="flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-size:16px;font-family:'Bebas Neue',sans-serif;font-weight:700;padding:7px 10px;outline:none;-moz-appearance:textfield"
             onfocus="this.style.borderColor='var(--warn)'" onblur="this.style.borderColor='var(--border2)'"
             oninput="runCarbCalc()">
@@ -954,7 +959,7 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
       <div class="sec-label">⚡ Weight Log + Adaptive Engine</div>
         <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.5">Log your weight daily. After 4 entries MACRO calculates your 7-day trend and auto-adjusts your protein target — MacroFactor-style.</div>
         <div style="display:flex;gap:8px;margin-bottom:8px">
-          <input type="number" id="weightLogInput" placeholder="185.4" step="0.1" min="50" max="500"
+          <input type="number" id="weightLogInput" aria-label="Weight to log" inputmode="decimal" placeholder="185.4" step="0.1" min="50" max="500"
             style="flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-size:18px;font-family:'Bebas Neue',sans-serif;font-weight:700;padding:9px 12px;outline:none;-moz-appearance:textfield"
             onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border2)'"
             onkeydown="if(event.key==='Enter')logWeightEntry()">
@@ -992,7 +997,7 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
             <div>
               <div class="label" id="budgetInputLabel">Daily Budget ($)</div>
               <div class="budget-wrap"><span class="budget-cur">$</span>
-              <input type="number" class="budget-num" id="budgetInput" value="15" min="1" step="1" oninput="onBudgetInput()" disabled></div>
+              <input type="number" class="budget-num" id="budgetInput" aria-label="Daily budget" inputmode="numeric" value="15" min="1" step="1" oninput="onBudgetInput()" disabled></div>
             </div>
             <div>
               <div class="label">Strategy</div>
@@ -1090,7 +1095,7 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
       <div id="budgetBar" style="display:none"></div>
       <div class="prog-wrap">
         <div class="prog-row"><div class="prog-label">Protein Progress</div><div class="prog-val" id="progressVal">0g <span>/ 150g</span></div></div>
-        <div class="prog-bar-bg"><div class="prog-bar-fill" id="progressBar" style="width:0%"></div></div>
+        <div class="prog-bar-bg"><div class="prog-bar-fill" id="progressBar" role="progressbar" aria-label="Protein progress for the day" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" style="width:0%"></div></div>
       </div>
       <div class="meals-header">
         <div class="plan-summary" id="planSummary">—</div>
@@ -1373,15 +1378,15 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">
           <div>
             <div style="font-size:9px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px">Bedtime</div>
-            <input type="time" id="sleepBed" value="22:30" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);color:var(--accent);font-size:12px;font-weight:700;padding:7px;outline:none;font-family:'Inter',sans-serif">
+            <input type="time" id="sleepBed" aria-label="Bedtime" value="22:30" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);color:var(--accent);font-size:12px;font-weight:700;padding:7px;outline:none;font-family:'Inter',sans-serif">
           </div>
           <div>
             <div style="font-size:9px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px">Wake Time</div>
-            <input type="time" id="sleepWake" value="06:30" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);color:var(--accent);font-size:12px;font-weight:700;padding:7px;outline:none;font-family:'Inter',sans-serif">
+            <input type="time" id="sleepWake" aria-label="Wake time" value="06:30" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);color:var(--accent);font-size:12px;font-weight:700;padding:7px;outline:none;font-family:'Inter',sans-serif">
           </div>
           <div>
             <div style="font-size:9px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px">Quality</div>
-            <select id="sleepQuality" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-size:11px;padding:7px;outline:none;font-family:'Inter',sans-serif">
+            <select id="sleepQuality" aria-label="Sleep quality" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-size:11px;padding:7px;outline:none;font-family:'Inter',sans-serif">
               <option value="3">Great</option>
               <option value="2" selected>Good</option>
               <option value="1">Poor</option>
@@ -1716,7 +1721,7 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
         <button class="tag" id="rf-vegan" onclick="filterRecipes('vegan',this)">&#x1F331; Vegan</button>
         <button class="tag" id="rf-quick" onclick="filterRecipes('quick',this)">&#x26A1; Under 20min</button>
       </div>
-      <input type="text" id="recipeSearch" placeholder="Search recipes..."
+      <input type="text" id="recipeSearch" aria-label="Search recipes" placeholder="Search recipes..."
         style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-size:13px;padding:9px 12px;outline:none;font-family:'Inter',sans-serif;margin-bottom:12px"
         oninput="searchRecipes(this.value)">
       <div id="recipeGrid"></div>
@@ -1769,15 +1774,15 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
 </div>
 
 <!-- SETTINGS MODAL -->
-<div id="settingsOverlay" onclick="closeSettingsIfBg(event)"
+<div id="settingsOverlay" role="dialog" aria-modal="true" aria-label="Settings" onclick="closeSettingsIfBg(event)"
   style="display:none;position:absolute;inset:0;background:rgba(0,0,0,.75);z-index:600;align-items:flex-end;justify-content:center;">
-  <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2) var(--r2) 0 0;width:100%;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;animation:slideUp .25s ease">
+  <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2) var(--r2) 0 0;width:100%;max-height:80vh;max-height:80dvh;display:flex;flex-direction:column;overflow:hidden;animation:slideUp .25s ease">
     <!-- Handle + header -->
     <div style="padding:14px 18px 12px;border-bottom:1px solid var(--border);flex-shrink:0">
       <div style="width:36px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 14px"></div>
       <div style="display:flex;align-items:center;justify-content:space-between">
         <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;font-weight:700">⚙️ Settings</div>
-        <button onclick="closeSettings()" style="background:transparent;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:4px;-webkit-tap-highlight-color:rgba(0,0,0,0)">✕</button>
+        <button aria-label="Close" onclick="closeSettings()" style="background:transparent;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:4px;-webkit-tap-highlight-color:rgba(0,0,0,0)">✕</button>
       </div>
     </div>
     <!-- Settings content -->
@@ -2027,7 +2032,7 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
       <svg width="16" height="16" viewBox="0 0 24 24" fill="#1DB954"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
       <span style="font-family:'Oswald',sans-serif;font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#fff">Music</span>
     </div>
-    <button onclick="closeMusicPage()" style="background:transparent;border:none;color:#666;font-size:20px;cursor:pointer;padding:0;line-height:1;-webkit-tap-highlight-color:rgba(0,0,0,0)">✕</button>
+    <button aria-label="Close" onclick="closeMusicPage()" style="background:transparent;border:none;color:#666;font-size:20px;cursor:pointer;padding:0;line-height:1;-webkit-tap-highlight-color:rgba(0,0,0,0)">✕</button>
   </div>
 
   <!-- Artist hero -->
@@ -2134,7 +2139,7 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
     <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;font-weight:900;color:var(--accent);margin-bottom:6px;line-height:1.1">Get the Free<br>Meal Plan PDF</div>
     <div style="font-size:12px;color:var(--muted);margin-bottom:20px;line-height:1.5">Weekly high-protein meal plans + supplement timing guide — delivered to your inbox. No spam, ever.</div>
     <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px">
-      <input id="emailInput" type="email" placeholder="your@email.com"
+      <input id="emailInput" aria-label="Email address" autocomplete="email" type="email" placeholder="your@email.com"
         style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-size:15px;padding:12px 14px;outline:none;font-family:'Inter',sans-serif"
         onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border2)'"
         onkeydown="if(event.key==='Enter')submitEmail()">
@@ -2154,16 +2159,16 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
 </div>
 
 <!-- GROCERY LIST MODAL -->
-<div id="groceryOverlay" onclick="closeGroceryIfBg(event)"
+<div id="groceryOverlay" role="dialog" aria-modal="true" aria-label="Grocery list" onclick="closeGroceryIfBg(event)"
   style="display:none;position:absolute;inset:0;background:rgba(0,0,0,.82);z-index:600;align-items:flex-end;justify-content:center;">
-  <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2) var(--r2) 0 0;width:100%;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;animation:slideUp .25s ease">
+  <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2) var(--r2) 0 0;width:100%;max-height:90vh;max-height:90dvh;display:flex;flex-direction:column;overflow:hidden;animation:slideUp .25s ease">
     <div style="padding:14px 16px 10px;border-bottom:1px solid var(--border);flex-shrink:0">
       <div style="width:36px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 12px"></div>
       <div style="display:flex;align-items:center;justify-content:space-between">
         <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;font-weight:700">🛒 Grocery List</div>
-        <button onclick="closeGroceryList()" style="background:transparent;border:none;color:var(--muted);font-size:20px;cursor:pointer;-webkit-tap-highlight-color:rgba(0,0,0,0)">✕</button>
+        <button aria-label="Close" onclick="closeGroceryList()" style="background:transparent;border:none;color:var(--muted);font-size:20px;cursor:pointer;-webkit-tap-highlight-color:rgba(0,0,0,0)">✕</button>
       </div>
-      <input id="grocerySearch" type="text" placeholder="Search items..."
+      <input id="grocerySearch" aria-label="Search grocery items" type="text" placeholder="Search items..."
         style="width:100%;margin-top:10px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-size:13px;padding:8px 12px;outline:none;font-family:'Inter',sans-serif"
         oninput="filterGrocery(this.value)">
     </div>
@@ -2184,7 +2189,7 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
 <!-- SIDES PICKER MODAL -->
 <div id="sidesOverlay" onclick="closeSidesIfBg(event)"
   style="display:none;position:absolute;inset:0;background:rgba(0,0,0,.8);z-index:500;align-items:flex-end;justify-content:center;">
-  <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2) var(--r2) 0 0;width:100%;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;animation:slideUp .25s ease">
+  <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2) var(--r2) 0 0;width:100%;max-height:85vh;max-height:85dvh;display:flex;flex-direction:column;overflow:hidden;animation:slideUp .25s ease">
     <div style="padding:14px 16px 10px;border-bottom:1px solid var(--border)">
       <div style="width:36px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 12px"></div>
       <div style="display:flex;align-items:center;justify-content:space-between">
@@ -2205,13 +2210,13 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
 
 <!-- SWAP MODAL -->
 <div class="swap-overlay" id="swapOverlay" onclick="closeSwapIfBg(event)">
-  <div class="swap-modal">
+  <div class="swap-modal" role="dialog" aria-modal="true" aria-label="Swap meal">
     <div class="swap-hdr">
       <div class="swap-handle"></div>
-      <button class="swap-close" onclick="closeSwap()">✕</button>
+      <button class="swap-close" aria-label="Close" onclick="closeSwap()">✕</button>
       <div class="swap-title">Swap Meal</div>
       <div class="swap-sub" id="swapSubLabel">Replacing: —</div>
-      <input class="swap-search-input" id="swapSearch" placeholder="Search by name, meat, cut..." oninput="renderSwapList()">
+      <input class="swap-search-input" id="swapSearch" aria-label="Search swap options" placeholder="Search by name, meat, cut..." oninput="renderSwapList()">
     </div>
     <div class="swap-list" id="swapList"></div>
     <div class="swap-footer">Valid for your diet · allergens · cuts · ✦ = digit-sum 9</div>
@@ -2249,14 +2254,14 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
 
   <!-- Ask mode -->
   <div id="ai-ask-panel" style="display:flex;flex-direction:column;flex:1;overflow:hidden">
-    <div id="aiMessages" style="flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:8px;min-height:120px;max-height:200px"></div>
+    <div id="aiMessages" role="log" aria-live="polite" aria-label="AI conversation" style="flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:8px;min-height:120px;max-height:200px"></div>
     <!-- Quick templates -->
     <div style="padding:6px 12px;border-top:1px solid var(--border)">
       <div style="font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:5px">Quick Templates</div>
       <div id="aiTemplates"></div>
     </div>
     <div style="padding:8px 12px;border-top:1px solid var(--border);display:flex;gap:6px">
-      <input id="aiInput" placeholder="Is berberine safe? Best protein for muscle?" 
+      <input id="aiInput" aria-label="Ask MACRO AI" enterkeyhint="send" placeholder="Is berberine safe? Best protein for muscle?" 
         style="flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-size:12px;padding:8px 10px;outline:none;font-family:'Inter',sans-serif"
         onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAiMessage()}"
         onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border2)'">
@@ -2276,7 +2281,7 @@ body:has(#onboardOverlay[style*="display: flex"]) .app-nav{
       <div style="font-size:11px;color:var(--muted);margin-bottom:8px;line-height:1.5">
         Tell Claude what you feel like eating today. Be as specific or vague as you want.
       </div>
-      <textarea id="eatInput" placeholder="e.g. I want salmon for dinner, eggs for breakfast, and something light for lunch. I'm trying to hit 180g protein today and I have about $20 to spend."
+      <textarea id="eatInput" aria-label="What do you feel like eating" placeholder="e.g. I want salmon for dinner, eggs for breakfast, and something light for lunch. I'm trying to hit 180g protein today and I have about $20 to spend."
         style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-size:12px;padding:9px 11px;outline:none;font-family:'Inter',sans-serif;resize:none;height:100px;line-height:1.5"
         onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border2)'"></textarea>
       <button onclick="generateCustomPlan()" id="eatGenBtn"
@@ -2855,6 +2860,7 @@ function renderPlan(){
   const totProt=plan.reduce((s,m)=>s+m.protein,0);
   const totCost=plan.reduce((s,m)=>s+m.adjCost,0);
   document.getElementById('progressBar').style.width=Math.min(100,(totProt/target*100))+'%';
+  document.getElementById('progressBar').setAttribute('aria-valuenow',Math.round(Math.min(100,(totProt/target*100)))||0);
   document.getElementById('progressVal').innerHTML=`${totProt}g <span>/ ${target}g</span>`;
   document.getElementById('planSummary').textContent=`${plan.length} meals · ${totProt}g · $${totCost.toFixed(2)}`;
   const bb=document.getElementById('budgetBar');
@@ -2986,7 +2992,7 @@ function renderFfCostToggles(){
         font-size:11px;font-weight:600;
         padding:5px 11px;cursor:pointer;
         font-family:'Inter',sans-serif;
-        transition:all .15s;
+        transition:background-color .15s, border-color .15s, color .15s;
         white-space:nowrap">
       ${f.emoji} ${f.name}
     </button>`;
@@ -3311,7 +3317,7 @@ function initSchedule(){
          data-idx="${i}" onchange="updateRoutineField(${i},'time',this.value)" />
        <button onclick="removeRoutineRow(${i})"
          style="background:transparent;border:none;color:var(--muted);font-size:14px;cursor:pointer;padding:4px 6px;margin-left:4px;-webkit-tap-highlight-color:transparent"
-         title="Remove">×</button>
+         title="Remove" aria-label="Remove">×</button>
      </div>`
   ).join('') + `
      <button onclick="addRoutineRow()" style="width:100%;margin-top:8px;background:transparent;border:1px dashed var(--border2);border-radius:var(--r);color:var(--muted);font-family:'Oswald',sans-serif;font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;padding:9px;cursor:pointer;-webkit-tap-highlight-color:transparent">
@@ -4037,7 +4043,7 @@ function renderAiTemplates() {
   if (!el) return;
   el.innerHTML = AI_TEMPLATES.map(t => `
     <button onclick="useAiTemplate(${AI_TEMPLATES.indexOf(t)})"
-      style="display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:8px 12px;cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;color:var(--muted);-webkit-tap-highlight-color:rgba(0,0,0,0);text-align:left;width:100%;margin-bottom:5px;transition:all .15s">
+      style="display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:8px 12px;cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;color:var(--muted);-webkit-tap-highlight-color:rgba(0,0,0,0);text-align:left;width:100%;margin-bottom:5px;transition:background-color .15s, border-color .15s, color .15s">
       <span style="font-size:14px;flex-shrink:0">${t.emoji}</span>
       <span style="font-weight:600">${t.label}</span>
     </button>`).join('');
@@ -4736,7 +4742,7 @@ function updateXPBar(){
   const fill=document.getElementById('xpFill');
   const pill=document.getElementById('levelPill');
   const next=document.getElementById('xpNext');
-  if(fill)fill.style.width=pct+'%';
+  if(fill){fill.style.width=pct+'%';fill.setAttribute('aria-valuenow',Math.round(pct));}
   if(pill)pill.textContent=`Lv.${lvl+1} ${levelName}`;
   if(next)next.textContent=`${gameState.xp} / ${nextThresh} XP`;
   // Header streak badge
@@ -5942,6 +5948,48 @@ function registerModalClose(id){
 }
 
 // ═══════════════════════════════════
+// KEYBOARD ACCESS (no visual change for mouse/touch)
+// - Escape closes the topmost open sheet.
+// - Clickable <div>/<span>s become keyboard buttons (Tab to reach, Enter/Space to press).
+// ═══════════════════════════════════
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape'){
+    const closers = {musicPage:'closeMusicPage', grocery:'closeGroceryList', settings:'closeSettings', swap:'closeSwap'};
+    const open = Array.from(_openModals).reverse();
+    for(const id of open){
+      const fn = closers[id];
+      if(fn && typeof window[fn] === 'function'){ e.preventDefault(); window[fn](); return; }
+    }
+    return;
+  }
+  if(e.key === 'Enter' || e.key === ' '){
+    const el = e.target;
+    if(el && el.getAttribute && el.getAttribute('role') === 'button' && el.hasAttribute('data-kbd') ){
+      e.preventDefault();
+      el.click();
+    }
+  }
+});
+// A mouse/touch tap must not leave focus on these (it would trigger :focus-within styles).
+document.addEventListener('focusin', function(e){
+  const el = e.target;
+  if(el && el.hasAttribute && el.hasAttribute('data-kbd') && !el.matches(':focus-visible')) el.blur();
+});
+function _kbdDecorate(root){
+  const skip = /overlay|modal|backdrop|drawer|sheet/i;
+  (root || document).querySelectorAll('div[onclick],span[onclick]').forEach(function(el){
+    if(el.hasAttribute('data-kbd') || el.hasAttribute('role') || el.hasAttribute('tabindex')) return;
+    if(skip.test(el.className) || skip.test(el.id)) return;
+    if(el.querySelector('button,input,select,textarea,a,[onclick]')) return;
+    el.setAttribute('role','button');
+    el.setAttribute('tabindex','0');
+    el.setAttribute('data-kbd','1');
+  });
+}
+// Decorate just before keyboard focus moves, so mouse and touch users never see any change.
+document.addEventListener('keydown', function(e){ if(e.key === 'Tab') _kbdDecorate(document); }, true);
+
+// ═══════════════════════════════════
 // GLIDE — nothing just appears
 // Card/button -> sheet morph (View Transitions) and menus that grow out of their button (Web Animations).
 // Motion only: every update callback does exactly what the instant code did. Reduced motion or no API = instant.
@@ -6377,7 +6425,7 @@ function showTourTooltip(step, panelNum) {
   dotsEl.innerHTML = TOUR_STEPS.map(s => {
     const isSeen = tourState.seenTabs.has(s.panel);
     const isCurrent = s.panel === panelNum;
-    return `<div style="width:${isCurrent?'18px':'6px'};height:6px;border-radius:3px;background:${isCurrent?'var(--accent)':isSeen?'var(--success)':'var(--border2)'};transition:all .2s"></div>`;
+    return `<div style="width:${isCurrent?'18px':'6px'};height:6px;border-radius:3px;background:${isCurrent?'var(--accent)':isSeen?'var(--success)':'var(--border2)'};transition:width .2s, background-color .2s"></div>`;
   }).join('');
 
   // Update next button — last step shows "Done"
